@@ -1,0 +1,49 @@
+# New GitHub Pages: deploy from a workflow artifact (not "branch & /docs" only).
+# After merge: Settings → Pages → Build: GitHub Actions (if not auto-selected).
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: pages-deploy
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Assemble static site (no Jekyll, no build — copy only public assets)
+        run: |
+          set -e
+          mkdir -p _site
+          cp -a index.html .nojekyll _site/
+          [ -f pages.yml ] && cp -a pages.yml _site/
+          cp -a content _site/
+          cp -a src _site/
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deploy
+        uses: actions/deploy-pages@v4

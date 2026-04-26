@@ -4,24 +4,40 @@
 [![Pages](https://img.shields.io/badge/Pages-static%2C%20no%20Jekyll%20build-196127.svg?logo=github)](https://eSlider.github.io/md-frontend-framework/)
 [![ESM](https://img.shields.io/badge/runtime-browser%20ES%20modules-blue.svg)](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guides/Modules)
 [![no build](https://img.shields.io/badge/build-none-lightgrey.svg)](package.json)
+[![zero backend](https://img.shields.io/badge/runtime-zero%20backend-333.svg)](https://github.com/eSlider/md-frontend-framework#features)
+[![declarative](https://img.shields.io/badge/style-declarative--first-5a3.svg)](https://github.com/eSlider/md-frontend-framework#features)
 
 **[Live site (GitHub Pages)](https://eSlider.github.io/md-frontend-framework/)** ·
 **[Repository](https://github.com/eSlider/md-frontend-framework)**
 
 Experiment: **one markdown document** = YAML **frontmatter** + body with GitHub-Flavoured **Markdown** and **fenced `ui` blocks** (declarative form schema). The browser compiles the string to a small **view model** and the render layer maps that to the DOM. **Styling** stays in the host (CSS), not in author-controlled inline styles in content.
 
-> **Repository “About” (copy-paste):** *Client-side MD + YAML: frontmatter, fenced `ui` blocks, compile→render contract. Vanilla ESM, no bundle. Research prototype.*
+> **Repository “About” (copy-paste):** *Client-side MD + YAML: frontmatter, fenced `ui` blocks, compile→render contract. Zero backend, zero build, declarative-first. Vanilla ESM. Research prototype.*
+
+## Features
+
+These are *design* labels, not marketing absolutes—see the table for what they mean in this repo.
+
+| Feature | What it means here |
+|--------|---------------------|
+| **Zero backend** | The **shipped** site is **static files** only. There is no app server, API, or database in the delivery path. A browser fetches `index.html`, `src/`, `content/`, and `pages.yml` from any static host (or GitHub Pages). |
+| **Zero build** | **No** bundler, no `npm run build`, no compile step in CI for the app. The browser runs **ES modules** with an **`importmap`**; `npm run dev` is an optional local static server, not a pipeline. |
+| **Zero [author] code** | **Authors** of pages do not write application code: they add **Markdown**, **YAML** (frontmatter + ` ```ui` blocks), and the **`pages.yml`** tree. You are not hand-writing React/Vue/TSX to ship a form or a nav entry. (The small **engine** in `src/*.js` is prewritten and shared.) |
+| **Declarative-first** | The **source of truth** is **data**: fence blocks describe UI; `pages.yml` describes the **site map**; forms use `type`, `items`, and HTML-like `action` / `method`—**declare** what you need, the runtime maps it to the DOM. |
+
+**What this is *not*:** a claim that the repository contains *no* JavaScript (the engine is JS), or that you should run untrusted markdown without sanitization—see [Security note](#security-note).
 
 ---
 
 ## Table of contents
 
+- [Features](#features)
 - [Why this exists (research)](#why-this-exists-research)
 - [What it is (and is not)](#what-it-is-and-is-not)
 - [Architecture: the contract](#architecture-the-contract)
 - [Run locally](#run-locally)
 - [Site map: `pages.yml` and routing](#site-map-pagesyml-and-routing)
-- [GitHub Pages: static, no Jekyll, no Action](#github-pages-static-no-jekyll-no-action)
+- [GitHub Pages: Actions workflow (new default)](#github-pages-actions-workflow-new-default)
 - [Security note](#security-note)
 - [License](#license)
 
@@ -111,19 +127,22 @@ The parser lives in `parsePagesYmlText` in `site-nav.js`.
 
 ---
 
-## GitHub Pages: static, no Jekyll, no Action
+## GitHub Pages: Actions workflow (new default)
 
-This project is a **static site** (HTML, CSS, JS) served **as files**. There is **no** Jekyll or Eleventy build, and **no** required GitHub Actions workflow.
+This repo uses the **current** GitHub Pages model: **deploy from a GitHub Actions workflow** (artifact), not only “**Deploy from a branch**”. That gives you a clear build step (here: **package** static files) and the [standard `actions/deploy-pages`](https://github.com/actions/deploy-pages) path.
 
-1. In the repository: a **`.nojekyll`** file in the publishing root so GitHub **does not** run the default [Jekyll](https://jekyllrb.com/) step on your static files. This repo is not a Jekyll site; skipping the generator keeps `index.html` and ES modules exactly as in Git.
-2. **Settings** → **Pages** → **Build and deployment** → **Deploy from a branch** → `main` → **/ (root)**.  
-3. The site URL is: **`https://<user>.github.io/<repo>/`**  
-   - This repo: **[`https://eSlider.github.io/md-frontend-framework/`](https://eSlider.github.io/md-frontend-framework/)**  
-4. `fetch` uses relative URLs from `import.meta.url`; they work under the `/<repo>/` base path the same as locally. The first time you open the Pages URL, GitHub may return **404** for a short period while the static export updates; try again in one or two minutes.
+| Piece | Role |
+|------|------|
+| [`.github/workflows/deploy-gh-pages.yml`](.github/workflows/deploy-gh-pages.yml) | On `push` to `main`, copies `index.html`, `.nojekyll`, `pages.yml`, `content/`, `src/` into `_site/`, **uploads** the artifact, **deploys** to Pages. **No** Jekyll, **no** bundler—just a static tree. |
+| **`.nojekyll`** | Still present: if you ever switch to “branch & root” deploy, it stops Jekyll from processing this non-Jekyll site. |
+| **Settings** | **Settings** → **Pages** → **Build and deployment** → set **Source** to **GitHub Actions** (not “Deploy from a branch”) so this workflow is the one that publishes. If the repo previously used **branch** deploy, switch the source once to avoid two competing configs. |
+| **URL** | Project site: **`https://<user>.github.io/<repo>/`** — e.g. **[`https://eSlider.github.io/md-frontend-framework/`](https://eSlider.github.io/md-frontend-framework/)** |
 
-*Optional:* add a [custom domain](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site) in **Settings** → **Pages** if you use your own host.
+The published site only needs the files the browser loads; the workflow **does not** copy `dev-server.js`, `README`, or `.github` into the artifact, keeping the deploy small and aligned with *zero-build* / *static* delivery.
 
-You can also host the same files on any static host (S3+CloudFront, Netlify, etc.); the README section above is GitHub-specific for **Jekyll off** and **branch deploy**.
+**First visit after a deploy** can briefly show **404** while Pages updates; refresh after a minute if needed. **Custom domain:** [GitHub docs](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site).
+
+**Alternatives:** The same `index.html` + `src` + `content` tree can be served from any static host (S3+CloudFront, Netlify, etc.) without this workflow.
 
 ---
 
@@ -139,4 +158,4 @@ You can also host the same files on any static host (S3+CloudFront, Netlify, etc
 
 ## Topics (for GitHub search)
 
-Suggested repository topics: `markdown`, `yaml`, `es-modules`, `static-site`, `github-pages`, `form`, `research`, `no-build`, `frontend`.
+Suggested repository topics: `markdown`, `yaml`, `es-modules`, `static-site`, `github-pages`, `github-actions`, `form`, `research`, `no-build`, `declarative`, `frontend`.

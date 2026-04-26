@@ -1,7 +1,7 @@
 {
   "name": "md-frontend-framework",
   "version": "0.1.0",
-  "description": "Client-side MD + YAML: frontmatter, fenced ui blocks, compile/render contract. Vanilla ESM, no bundle. Research prototype.",
+  "description": "Client-side MD + YAML: zero backend, zero build, declarative-first. frontmatter, fenced ui blocks, compile/render. Vanilla ESM. Research prototype.",
   "type": "module",
   "private": false,
   "license": "MIT",
@@ -20,6 +20,8 @@
     "esm",
     "static-site",
     "github-pages",
+    "github-actions",
+    "declarative",
     "forms"
   ]
 }
