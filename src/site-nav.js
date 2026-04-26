@@ -128,14 +128,9 @@ export function getPathFromQuery(search) {
 /**
  * @param {string} contentPath
  */
+// Query-only URL: same directory as this page (works for `.../user/repo/` on GitHub Pages, not a `/`-root href).
 export function setPathInCurrentUrl(contentPath) {
-  if (typeof location === "undefined") {
-    return "?path=" + encodeURIComponent(contentPath);
-  }
-  const u = new URL(location.href);
-  u.searchParams.set(Q, contentPath);
-  u.hash = "";
-  return u.pathname + u.search;
+  return "?" + new URLSearchParams({ [Q]: contentPath }).toString();
 }
 
 /**
@@ -210,22 +205,21 @@ function renderNavItem(n, cNorm, onNavigate) {
 }
 
 function pathToHref(contentPath) {
-  if (typeof location === "undefined") {
-    return "?path=" + encodeURIComponent(contentPath);
-  }
-  const u = new URL(location.href);
-  u.searchParams.set(Q, contentPath);
-  u.hash = "";
-  return u.pathname + u.search;
+  return "?" + new URLSearchParams({ [Q]: contentPath }).toString();
 }
 
 /**
- * Resolve a repo-root-relative markdown path to a module-relative URL
- * (main is under `src/`; project root is one `..` up).
- * @param {string} contentPath
- * @param {string} importMetaUrl
+ * `contentPath` is relative to the app root (directory with index.html and pages.yml). No `..` or `//`. No leading `/` (treated as stripped).
+ * `importMetaUrl` is a module under `src/`; site base is one `..` (works on GitHub Pages and local dev without `/absolute-from-domain-root` URLs).
  */
 export function contentUrl(/** @type {string} */ contentPath, /** @type {string} */ importMetaUrl) {
-  const root = new URL("..", importMetaUrl);
-  return new URL(contentPath.replace(/^\//, ""), root);
+  const raw = String(contentPath)
+    .replace(/^\s+|\s+$/g, "")
+    .replace(/^\//, "")
+    .replace(/^\.\//, "");
+  if (!raw || raw.includes("..") || /\\/.test(raw)) {
+    throw new Error("content path must be a relative file path, no '..' (got: " + String(contentPath) + ")");
+  }
+  const siteBase = new URL("..", importMetaUrl);
+  return new URL(raw, siteBase);
 }

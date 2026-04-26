@@ -91,10 +91,12 @@ Dependencies are loaded from a CDN via **`importmap`** in `index.html` ([`marked
 
 ## Site map: `pages.yml` and routing
 
-A **`pages.yml`** in the [repository root](pages.yml) describes a **nav tree** for the whole static “site”: titles, optional repo-root `path` to a markdown file, and nested **`items`**. The app **fetches** that file; if the response is not OK, the app falls back to **no sidebar** and still serves markdown via `?path=`.
+A **`pages.yml`** in the [same folder as `index.html`](pages.yml) describes a **nav tree** for the whole static “site”: titles, optional `path` to a markdown file, and nested **`items`**. The app **fetches** that file; if the response is not OK, the app falls back to **no sidebar** and still serves markdown via `?path=`.
+
+**Relative URLs only (no domain-root `/` paths):** `index.html` loads **`./src/main.js`** and **`./src/app.css`**, so the app works on **GitHub Pages** (e.g. `https://user.github.io/repo-name/`) as well as locally. Nav and `history` use a **query-only** href (`?path=…`, resolved for the *current* document path), not `/?path=` at the **site** root of the host.
 
 - **`default_path`** (optional) — which markdown file to use when the URL has no `path` query (if omitted, the first `path` in a depth-first walk is used, then `content/example.md` as a last resort).
-- **`path`** on a node must be a path **from the project root** (e.g. `content/specs.md`). Query routing uses **`?path=content%2Fspecs.md`**.
+- **`path`** on a node is **relative to the app base** (folder that contains `index.html` and `pages.yml`, same layout as the repo in this project). Use forward slashes, **no** leading `/` (e.g. `content/specs.md`, not `/content/specs.md`). Fetches use `import.meta.url` so they work under a project subpath.
 
 Layout: [`src/main.js`](src/main.js) loads the tree, [`src/site-nav.js`](src/site-nav.js) parses YAML and builds the **nested `<nav>`**; the left column is hidden when `pages.yml` is missing or empty.
 
