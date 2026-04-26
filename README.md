@@ -9,7 +9,7 @@
 
 **[Repository](https://github.com/eSlider/md-frontend-framework)** ·
 **[Live site](https://eSlider.github.io/md-frontend-framework/)** ·
-**[Framework manual (in the app)](https://eSlider.github.io/md-frontend-framework/#content/docs/index)**
+**[Framework manual (in the app)](https://eSlider.github.io/md-frontend-framework/#docs/index)**
 
 One markdown file = YAML **frontmatter** + **Markdown** (GFM) + fenced **` ```ui`** blocks (declarative form schema). The browser **compiles** the string to `{ meta, parts }` and **renders** to the DOM. Styling is host CSS only.
 
@@ -26,7 +26,7 @@ One markdown file = YAML **frontmatter** + **Markdown** (GFM) + fenced **` ```ui
 | **Zero [author] code** | Authors use Markdown, YAML, and `pages.yml` — not hand-written UI framework code per page. |
 | **Declarative-first** | Fences and the nav tree are data; the small engine in `src/*.js` maps to the DOM. |
 
-**What this is *not*:** a claim the repo has no JavaScript (the engine is JS) or that untrusted markdown is safe by default—see [Security note](#security-note). Details: [Philosophy](https://eSlider.github.io/md-frontend-framework/#content/docs/philosophy) · [Features (full)](https://eSlider.github.io/md-frontend-framework/#content/docs/features).
+**What this is *not*:** a claim the repo has no JavaScript (the engine is JS) or that untrusted markdown is safe by default—see [Security note](#security-note). Details: [Philosophy](https://eSlider.github.io/md-frontend-framework/#docs/philosophy) · [Features (full)](https://eSlider.github.io/md-frontend-framework/#docs/features).
 
 ## Run locally
 
@@ -43,7 +43,7 @@ npm run dev
 
 ## Site map and deploy
 
-- **Nav + default page:** `pages.yml` (next to `index.html`); default route: **Framework** home. **Deep links:** `#content/...` (no `.md`). In-app: [Site map & routing](https://eSlider.github.io/md-frontend-framework/#content/docs/site-map).
+- **Nav + default page:** `pages.yml` (next to `index.html`); default route: **Framework** home. **Deep links:** the hash is the path **under** `content/` (no `content` segment), e.g. [`#cookbook`](https://eSlider.github.io/md-frontend-framework/#cookbook) → `content/cookbook.md` (older `#content/...` forms still work and are rewritten in the address bar). In-app: [Site map & routing](https://eSlider.github.io/md-frontend-framework/#docs/site-map).
 - **GitHub Pages** uses [`.github/workflows/deploy-gh-pages.yml`](.github/workflows/deploy-gh-pages.yml): push to `main` → upload static `index.html`, `src/`, `content/`, `pages.yml`. **Settings** → **Pages** → **Source: GitHub Actions** so this workflow runs (not a competing “branch” deploy). URL pattern: `https://<user>.github.io/<repo>/`.
 
 **First visit after a deploy** can briefly show 404; refresh. Custom domain: [GitHub docs](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site).

@@ -5,7 +5,7 @@ description: "Design goals: content as contract, view as engine."
 
 # Philosophy
 
-[← Framework home](#content/docs/index)
+[← Framework home](#docs/index)
 
 ## The question
 
@@ -24,9 +24,9 @@ Can **content** be a portable **contract** (a string) and the **view** a replace
 
 **Content delivery** (file, `fetch`, CMS) only **provides a string**. Everything else is **compile** → `{ meta, parts }` and **render** → DOM. That is the **declaration** the engine implements.
 
-**Authors** work in **Markdown + YAML** (frontmatter, ` ```ui` blocks, `pages.yml`). They do not ship their own app bundle to add a form or a nav line—see [Features](#content/docs/features).
+**Authors** work in **Markdown + YAML** (frontmatter, ` ```ui` blocks, `pages.yml`). They do not ship their own app bundle to add a form or a nav line—see [Features](#docs/features).
 
 ## Related
 
-- [Architecture](#content/docs/architecture) — how the contract is wired in code
-- [Idea (short note)](#content/idea) in the old “reference” pages
+- [Architecture](#docs/architecture) — how the contract is wired in code
+- [Idea (short note)](#idea) in the old “reference” pages

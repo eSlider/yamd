@@ -5,7 +5,7 @@ description: " Served as static text; parsed in the browser."
 
 # Hello
 
-[← Framework home](#content/docs/index) · [Cookbook](#content/cookbook) · [Architecture](#content/docs/architecture)
+[← Framework home](#docs/index) · [Cookbook](#cookbook) · [Architecture](#docs/architecture)
 
 This page is **`content/example.md`** — also linked as **Demo** in the site nav (`pages.yml`). The **first markdown heading** is the on-page title; the tab title comes from frontmatter `title` above.
 

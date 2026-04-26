@@ -10,6 +10,7 @@ import {
   parsePagesYmlText,
   pickInitialPath,
   renderNavTree,
+  rewriteLegacyContentHash,
 } from "./site-nav.js";
 
 const PAGES = new URL("../pages.yml", import.meta.url);
@@ -125,6 +126,7 @@ window.addEventListener("hashchange", () => {
 void (async () => {
   try {
     migrateLegacyPathQuery();
+    rewriteLegacyContentHash();
     await loadTree();
     await go();
   } catch (e) {

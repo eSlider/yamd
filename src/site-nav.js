@@ -113,8 +113,10 @@ export function norm(/** @type {string} */ s) {
 }
 
 /**
- * Hash deep-link, no `.md` in the bar: `#content/foo/bar` → fetch `content/foo/bar.md`
- * @param {string} [locHash] e.g. "#content/start" (optional; default `location.hash`)
+ * Hash is **path under `content/`** (no `content` segment in the bar):
+ * `#cookbook` → fetches `content/cookbook.md` · `#docs/philosophy` → `content/docs/philosophy.md`.
+ * Legacy `#content/...` still resolves; use {@link rewriteLegacyContentHash} once on load to normalize the address bar.
+ * @param {string} [locHash] e.g. "#cookbook" (optional; default `location.hash`)
  */
 export function getContentPathFromHash(locHash) {
   const h = (locHash == null && typeof location !== "undefined" ? location.hash : locHash) || "";
@@ -125,7 +127,7 @@ export function getContentPathFromHash(locHash) {
 }
 
 /**
- * @param {string} h — e.g. "#content/start" or "content/start"
+ * @param {string} h — e.g. "#cookbook", "#docs/index", or legacy "#content/cookbook"
  * @returns {string|undefined} repo-relative `content/...md` or undefined
  */
 function hashToContentPath(h) {
@@ -136,15 +138,22 @@ function hashToContentPath(h) {
   if (!raw || raw.includes("..") || /\\/.test(raw)) {
     return undefined;
   }
-  if (raw.endsWith(".md")) {
-    return norm(raw);
+  const base = raw.toLowerCase().endsWith(".md") ? raw.slice(0, -3) : raw;
+  const legacy = base.toLowerCase() === "content" || base.toLowerCase().startsWith("content/");
+  const under = legacy ? (base.toLowerCase() === "content" ? "" : base.slice(8) /* "content/".length */) : base;
+  if (legacy && under === "") {
+    return undefined;
   }
-  return norm(raw) + ".md";
+  const withDir = (under && norm(under) ? "content/" + norm(under) : "").replace(/\/+$/, "");
+  if (!withDir) {
+    return undefined;
+  }
+  return withDir + ".md";
 }
 
 /**
- * @param {string} contentPath — e.g. `content/start.md`
- * @returns {string} e.g. `#content/start`
+ * @param {string} contentPath — e.g. `content/cookbook.md`
+ * @returns {string} e.g. `#cookbook` (no `content/` in the bar)
  */
 export function contentPathToHash(contentPath) {
   const s = String(contentPath)
@@ -153,7 +162,39 @@ export function contentPathToHash(contentPath) {
   if (!s) {
     return "#";
   }
-  return "#" + norm(s);
+  const n = norm(s);
+  if (!n.toLowerCase().startsWith("content/") && n !== "content") {
+    return "#" + n;
+  }
+  const rest = n.toLowerCase() === "content" ? "" : n.slice(8);
+  return rest ? "#" + rest : "#";
+}
+
+/**
+ * Replaces `location` hash `#content/...` with `#...` (new canonical form). No-op if already new or no hash.
+ */
+export function rewriteLegacyContentHash() {
+  if (typeof location === "undefined" || !location.hash || location.hash === "#") {
+    return;
+  }
+  const raw = location.hash.replace(/^#+/, "").replace(/^\//, "");
+  const rl = raw.toLowerCase();
+  if (rl !== "content" && !rl.startsWith("content/")) {
+    return;
+  }
+  const inner = rl === "content" ? "" : raw.slice(8);
+  if (inner && (inner.includes("..") || /\\/.test(inner))) {
+    return;
+  }
+  const p = new URLSearchParams(location.search);
+  p.delete("path");
+  const q = p.toString();
+  const newHash = inner && norm(inner) ? "#" + norm(inner) : "#";
+  if (newHash === location.hash) {
+    return;
+  }
+  const base = location.pathname + (q ? "?" + q : "") + newHash;
+  history.replaceState(null, "", base);
 }
 
 /**

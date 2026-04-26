@@ -4,7 +4,7 @@ title: "Specs"
 
 # Specs
 
-[← Framework home](#content/docs/index) · [Site map & routing](#content/docs/site-map)
+[← Framework home](#docs/index) · [Site map & routing](#docs/site-map)
 
 Fenced ` ```ui` blocks in Markdown map to a small YAML form model, then to DOM. Site navigation is driven by `pages.yml` at the repo root.
 

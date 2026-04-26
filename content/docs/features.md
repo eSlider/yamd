@@ -5,7 +5,7 @@ description: "Zero backend, zero build, declarative-first, author vs engine."
 
 # Features
 
-[← Framework home](#content/docs/index)
+[← Framework home](#docs/index)
 
 These labels describe **design intent**, not marketing absolutes.
 
@@ -18,4 +18,4 @@ These labels describe **design intent**, not marketing absolutes.
 
 **Not claimed:** that the repo contains *no* JavaScript (it does), or that **untrusted** markdown is safe without a sanitizer—see the [security section in the README](https://github.com/eSlider/md-frontend-framework#security-note).
 
-**Related:** [Philosophy](#content/docs/philosophy) · [Architecture](#content/docs/architecture)
+**Related:** [Philosophy](#docs/philosophy) · [Architecture](#docs/architecture)

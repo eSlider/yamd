@@ -11,16 +11,16 @@ This site is the **framework manual**: Markdown in [`content/`](https://github.c
 
 | Topic | What you get |
 |-------|----------------|
-| [Philosophy](#content/docs/philosophy) | Why a **string → compile → render** contract, and what we avoid |
-| [Features](#content/docs/features) | **Zero backend**, **zero build**, **declarative-first**, **zero [author] code** (explained precisely) |
-| [Architecture](#content/docs/architecture) | `compile` / `render` flow, module roles |
-| [Site map & routing](#content/docs/site-map) | `pages.yml`, hash links `#content/...`, `default_path` |
-| [Get started](#content/docs/get-started) | Local run, first edits, where the engine lives |
+| [Philosophy](#docs/philosophy) | Why a **string → compile → render** contract, and what we avoid |
+| [Features](#docs/features) | **Zero backend**, **zero build**, **declarative-first**, **zero [author] code** (explained precisely) |
+| [Architecture](#docs/architecture) | `compile` / `render` flow, module roles |
+| [Site map & routing](#docs/site-map) | `pages.yml`, deep links (path under `content/`, e.g. `#cookbook`), `default_path` |
+| [Get started](#docs/get-started) | Local run, first edits, where the engine lives |
 
 ## Examples (outside this section)
 
-- [Live demo (forms)](#content/example) — ` ```ui` blocks in one file
-- [Cookbook](#content/cookbook) · [Form patterns](#content/patterns) · [Research](#content/research)
-- [Specs](#content/specs) · [Idea (contract)](#content/idea)
+- [Live demo (forms)](#example) — ` ```ui` blocks in one file
+- [Cookbook](#cookbook) · [Form patterns](#patterns) · [Research](#research)
+- [Specs](#specs) · [Idea (contract)](#idea)
 
 The [repository README](https://github.com/eSlider/md-frontend-framework#readme) stays for **badges, clone, license, and CI**; philosophy and “how it works” live **here** so you can link between pages like a normal static manual.

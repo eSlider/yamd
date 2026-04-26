@@ -5,7 +5,7 @@ description: "compile → parts → render; modules in src/."
 
 # Architecture
 
-[← Framework home](#content/docs/index)
+[← Framework home](#docs/index)
 
 ## Data flow
 
@@ -34,4 +34,4 @@ flowchart LR
 
 Source: repo [`src/`](https://github.com/eSlider/md-frontend-framework/tree/main/src) (not served as a directory index on the static site).
 
-**Related:** [Site map & routing](#content/docs/site-map) · [Get started](#content/docs/get-started) · [Specs](#content/specs)
+**Related:** [Site map & routing](#docs/site-map) · [Get started](#docs/get-started) · [Specs](#specs)

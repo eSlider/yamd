@@ -1,5 +1,5 @@
 # Landing when no hash: this key, or first `path` in the tree.
-# Deep links: `#content/foo` (no `.md`) → fetches `content/foo.md`
+# Deep links: `#<path>` is relative to the content/ folder, e.g. #cookbook → content/cookbook.md
 default_path: content/docs/index.md
 
 nav:
