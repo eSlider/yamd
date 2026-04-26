@@ -1,6 +1,6 @@
 ---
 title: "Get started"
-description: "Clone, local servers, Docker (GHCR), deploy, edit content and nav."
+description: "Clone, search, local servers, Docker (GHCR), deploy, edit content and nav."
 ---
 
 # Get started
@@ -18,6 +18,16 @@ description: "Clone, local servers, Docker (GHCR), deploy, edit content and nav.
 4. **Change the nav** by editing [`pages.yml`](https://github.com/eSlider/yamd/blob/main/pages.yml) (paths are app-root-relative, e.g. `content/docs/index.md`).
 
 `importmap` in `index.html` loads [marked](https://github.com/markedjs/marked) and [yaml](https://github.com/eemeli/yaml) from a CDN; no `npm install` of those is required for the **browser** path.
+
+## Search in the nav
+
+When `pages.yml` defines a non-empty nav, a **search** field appears at the top of the left sidebar (and in the mobile drawer). **Nothing is downloaded for search until you focus** that field; each time you focus it, the index is **rebuilt** from every `path` in the tree (plus `default_path` if not already listed), so edits to Markdown are picked up on the next open.
+
+- **What is indexed:** nav item **titles** from `pages.yml`, `title` in each page’s **YAML frontmatter** (if present), and a plain-text form of the **Markdown body** (code blocks removed).
+- **Query:** Multiple words are **and**-ed: every word must appear somewhere in the combined text for a page to match.
+- **Keyboard:** With focus not in another control, press **`/`** to focus the search field. **`Escape`** clears the query.
+
+Details: [Features — Search (nav)](#docs/features) · [Architecture](#docs/architecture) (`nav-search.js`).
 
 ## Use a real HTTP server (not `file://`)
 

@@ -2,8 +2,10 @@ import { compile } from "./document.js";
 import { render } from "./render.js";
 import { runLazyEnrichers } from "./lazy-enrichers.js";
 import { setupMobileNav } from "./mobile-nav.js";
+import { setupNavSearch } from "./nav-search.js";
 import {
   coalescePath,
+  collectPageEntriesForSearch,
   contentPathToHash,
   contentUrl,
   getContentPathFromHash,
@@ -28,6 +30,10 @@ const nav = { defaultPath: null, items: [] };
 let hasNav = false;
 /** @type {ReturnType<typeof setupMobileNav>} */
 let mobileNav = null;
+/** @type {HTMLElement | null} */
+let navTreeRoot = null;
+/** @type {ReturnType<typeof setupNavSearch> | null} */
+let navSearch = null;
 
 /**
  * @param {() => void} fn
@@ -109,10 +115,31 @@ function drawNav(/** @type {string} */ rel) {
   if (!hasNav || !navHost) {
     return;
   }
-  renderNavTree(navHost, nav.items, rel, (p) => {
+  if (!navSearch || !navTreeRoot) {
+    const entries = collectPageEntriesForSearch(nav.items, nav.defaultPath);
+    navSearch = setupNavSearch(
+      {
+        onPick(/** @type {string} */ p) {
+          const u = getHistoryUrlForContent(p);
+          history.pushState({ p: p }, "", u);
+          void go(p);
+        },
+        onCloseMobile() {
+          mobileNav?.closeIfMobile();
+        },
+      },
+      import.meta.url,
+      entries
+    );
+    navHost.appendChild(navSearch.root);
+    navTreeRoot = document.createElement("div");
+    navTreeRoot.className = "yamd-nav__tree";
+    navHost.appendChild(navTreeRoot);
+  }
+  renderNavTree(navTreeRoot, nav.items, rel, (p) => {
     const u = getHistoryUrlForContent(p);
-    history.pushState({ p }, "", u);
-    go(p);
+    history.pushState({ p: p }, "", u);
+    void go(p);
   });
 }
 

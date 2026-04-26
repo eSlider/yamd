@@ -6,6 +6,4 @@ The pipeline is a **string in, DOM out** contract: `compile` then `render`, with
 
 Compare with heavy MDX or framework bundles: here the browser loads **ES modules** and `marked` / `yaml` from a CDN, with no build step in the repo for the app shell.
 
-## Latest result
-
-Added ASR note: [Architecture ASR - shadcn/ui CDN availability](../docs/architecture-asr.md).
+**Note:** The in-app **nav search** (see [Get started — Search](#docs/get-started)) indexes every page listed in `pages.yml` when you **focus** the search field, including body text and frontmatter `title`.

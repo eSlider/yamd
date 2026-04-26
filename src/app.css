@@ -60,6 +60,116 @@ body.yamd-nav--lock {
   font-size: 0.9rem;
 }
 
+/* —— Sidebar search (pages.yml titles + full-text in each listed .md) —— */
+.yamd-nav__tree {
+  min-width: 0;
+}
+
+.yamd-nav-search {
+  margin: 0 0 0.85rem;
+}
+
+.yamd-nav-search__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.yamd-nav-search__input {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0 0 0.35rem;
+  padding: 0.4rem 0.5rem;
+  font: inherit;
+  font-size: 0.9rem;
+  line-height: 1.35;
+  color: inherit;
+  background: var(--yamd-bg);
+  border: 1px solid var(--yamd-border);
+  border-radius: 8px;
+}
+
+.yamd-nav-search__input::placeholder {
+  color: var(--yamd-muted);
+  opacity: 0.9;
+}
+
+.yamd-nav-search__input:focus {
+  outline: 2px solid color-mix(in srgb, canvasText 35%, var(--yamd-border));
+  outline-offset: 1px;
+}
+
+.yamd-nav-search__status {
+  margin: 0 0 0.4rem;
+  min-height: 1.2em;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--yamd-muted);
+}
+
+.yamd-nav-search__results {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-height: min(40vh, 14rem);
+  overflow: auto;
+  border-radius: 8px;
+  border: 1px solid var(--yamd-border);
+  background: color-mix(in srgb, var(--yamd-bg) 97%, canvasText 2%);
+}
+
+.yamd-nav-search__item {
+  margin: 0;
+  border-bottom: 1px solid color-mix(in srgb, var(--yamd-border) 70%, transparent);
+}
+
+.yamd-nav-search__item:last-child {
+  border-bottom: none;
+}
+
+.yamd-nav-search__hit {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.1rem;
+  width: 100%;
+  margin: 0;
+  padding: 0.45rem 0.5rem;
+  text-align: start;
+  font: inherit;
+  font-size: 0.85rem;
+  line-height: 1.35;
+  color: inherit;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.yamd-nav-search__hit:hover,
+.yamd-nav-search__hit:focus-visible {
+  background: color-mix(in srgb, var(--yamd-border) 18%, transparent);
+  outline: none;
+}
+
+.yamd-nav-search__hit-title {
+  font-weight: 600;
+  word-break: break-word;
+}
+
+.yamd-nav-search__hit-sub {
+  font-size: 0.8rem;
+  color: var(--yamd-muted);
+  word-break: break-word;
+}
+
 .yamd-nav__list,
 .yamd-nav__sub {
   list-style: none;

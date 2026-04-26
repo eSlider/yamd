@@ -19,6 +19,7 @@
 - **You stay in content**, not a framework. Pages are **GitHub-Flavored Markdown** (plus optional frontmatter and fenced ` ```ui` blocks for forms). The shell loads once; you refresh when files change.
 - **Ships like any static site** — drop the folder on GitHub Pages, Netlify, S3, or your own host. The engine in `src/*.js` runs in the reader’s browser; there is no server-side render step for the app.
 - **The manual lives beside your docs** — philosophy, features, how routing works, local run, deploy, and security expectations are all in [`content/docs/`](content/docs/) and linked from the left nav. Start at [`content/docs/index.md`](content/docs/index.md).
+- **Search** in the sidebar indexes everything listed in [`pages.yml`](pages.yml) when you focus the search field (no upfront fetch; see [Get started](https://eSlider.github.io/yamd/#docs/get-started)).
 
 ## Try it in a minute
 

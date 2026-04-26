@@ -29,8 +29,9 @@ flowchart LR
 | `document.js` | Frontmatter, fence split, `marked` for body, `compile` output |
 | `render.js` | Puts `parts` into the article: sections + `render-ui.js` for UI |
 | `render-ui.js` | Declarative YAML form → DOM (inputs, `type: form`, nested `items`) |
-| `site-nav.js` | `pages.yml`, hash ↔ path, left nav; used from `main.js` |
-| `main.js` | Fetch `pages.yml` + markdown, routing (`hashchange` / `popstate`, legacy `?path=` once) |
+| `site-nav.js` | `pages.yml`, hash ↔ path, left nav, `collectPageEntriesForSearch`; used from `main.js` |
+| `nav-search.js` | Sidebar search UI, index per **focus** (fetches each listed `.md`, strippable body + titles) |
+| `main.js` | Fetch `pages.yml` + markdown, routing, nav + search + mobile drawer |
 
 Source: repo [`src/`](https://github.com/eSlider/yamd/tree/main/src) (not served as a directory index on the static site).
 

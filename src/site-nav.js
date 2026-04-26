@@ -93,6 +93,51 @@ function collectPaths(items) {
   return out;
 }
 
+/**
+ * All pages that appear in `pages.yml` (with path), plus `default_path` if it is not already listed.
+ * @param {NavItem[]} items
+ * @param {string | null} defaultPath
+ * @returns {{ path: string, label: string }[]}
+ */
+export function collectPageEntriesForSearch(/** @type {NavItem[]} */ items, /** @type {string | null} */ defaultPath) {
+  /** @type {{ path: string, label: string }[]} */
+  const out = [];
+  const seen = new Set();
+  (function w(/** @type {NavItem[]} */ a) {
+    for (const n of a) {
+      if (n.path) {
+        const p = String(n.path).replace(/^\s+|\s+$/g, "");
+        if (!p || p.includes("..") || p.includes("\\")) {
+          if (n.items) {
+            w(n.items);
+          }
+          continue;
+        }
+        const k = norm(p);
+        if (!seen.has(k)) {
+          seen.add(k);
+          out.push({ path: p, label: n.title || "Page" });
+        }
+      }
+      if (n.items) {
+        w(n.items);
+      }
+    }
+  })(items);
+  if (defaultPath && String(defaultPath).trim()) {
+    const p = String(defaultPath).trim();
+    if (!p.includes("..") && !/\\/.test(p)) {
+      const k = norm(p);
+      if (!seen.has(k)) {
+        const base = p.split("/").pop() || p;
+        const short = base.toLowerCase().endsWith(".md") ? base.slice(0, -3) : base;
+        out.push({ path: p, label: short || "Page" });
+      }
+    }
+  }
+  return out;
+}
+
 export function firstPathInTree(/** @type {NavItem[]} */ items) {
   for (const n of items) {
     if (n.path) {

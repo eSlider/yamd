@@ -12,10 +12,10 @@ description: "Yet another markdown: humanized in-app manual (content/ + pages.ym
 | Topic | What you get |
 |-------|----------------|
 | [Philosophy](#docs/philosophy) | Why a **string → compile → render** contract, and what we avoid |
-| [Features](#docs/features) | **Zero backend**, **zero build**, **declarative-first**, **zero [author] code** (explained precisely) |
-| [Architecture](#docs/architecture) | `compile` / `render` flow, module roles |
+| [Features](#docs/features) | **Zero backend** / **build** / **author code**, **declarative-first**, and **nav search** (see table there) |
+| [Architecture](#docs/architecture) | `compile` / `render` flow, `main.js` / `nav-search.js` / `site-nav.js` |
 | [Site map & routing](#docs/site-map) | `pages.yml`, deep links (e.g. `#examples/cookbook`), `default_path` |
-| [Get started](#docs/get-started) | Local run, static servers, **Docker (GHCR)**, deploy, first edits |
+| [Get started](#docs/get-started) | Local run, static servers, **search in nav**, **Docker (GHCR)**, deploy |
 | [Security](#docs/security) | Trust, `innerHTML`, untrusted markdown |
 
 ## Examples (outside this section)
