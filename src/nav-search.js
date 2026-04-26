@@ -122,22 +122,82 @@ function makeRowFromNavOnly(/** @type {{ path: string, label: string }} */ e) {
 }
 
 /**
- * All page paths (normalized) that match the same rules as search (and query).
+ * @param {string} hay
+ * @param {string} needle
+ * @returns {number} non-overlapping occurrence count
+ */
+function countNonOverlapping(/** @type {string} */ hay, /** @type {string} */ needle) {
+  if (!needle) {
+    return 0;
+  }
+  let c = 0;
+  let i = 0;
+  while (i < hay.length) {
+    const j = hay.indexOf(needle, i);
+    if (j < 0) {
+      break;
+    }
+    c++;
+    i = j + needle.length;
+  }
+  return c;
+}
+
+/**
+ * @param {IndexRow} row
+ * @param {string[]} terms
+ * @param {string} titleL
+ */
+function matchCountForIndexRow(/** @type {IndexRow} */ row, /** @type {string[]} */ terms, /** @type {string} */ titleL) {
+  if (terms.length === 0) {
+    return 0;
+  }
+  const byTerm = terms.map((term) => {
+    const inHay = countNonOverlapping(row.haystack, term);
+    if (inHay > 0) {
+      return inHay;
+    }
+    return countNonOverlapping(titleL, term);
+  });
+  if (byTerm.some((x) => x === 0)) {
+    return 0;
+  }
+  return Math.max(1, Math.min(...byTerm));
+}
+
+/**
+ * @param {{ path: string, label: string }} e
+ * @param {string[]} terms
+ */
+function matchCountForLabel(/** @type {{ path: string, label: string }} */ e, /** @type {string[]} */ terms) {
+  const l = (e.label || "").toLowerCase();
+  if (terms.length === 0) {
+    return 0;
+  }
+  const per = terms.map((t) => countNonOverlapping(l, t));
+  if (per.some((x) => x === 0)) {
+    return 0;
+  }
+  return Math.max(1, Math.min(...per));
+}
+
+/**
  * @param {IndexRow[]} index
  * @param {string} q
- * @returns {Set<string>}
+ * @returns {{ paths: Set<string>, counts: Map<string, number> }}
  */
-export function matchingPathsForQuery(/** @type {IndexRow[]} */ index, /** @type {string} */ q) {
+function getMatchResultFromIndex(/** @type {IndexRow[]} */ index, /** @type {string} */ q) {
   const t = String(q)
     .trim()
     .toLowerCase();
-  const out = new Set();
+  const paths = new Set();
+  const counts = new Map();
   if (!t) {
-    return out;
+    return { paths, counts };
   }
   const terms = t.split(/\s+/).filter((s) => s.length > 0);
   if (terms.length === 0) {
-    return out;
+    return { paths, counts };
   }
   for (const row of index) {
     const titleL = (row.docTitle + " " + row.navLabel).toLowerCase();
@@ -149,45 +209,59 @@ export function matchingPathsForQuery(/** @type {IndexRow[]} */ index, /** @type
       }
     }
     if (allTerms) {
-      out.add(norm(row.path));
+      const key = norm(row.path);
+      paths.add(key);
+      counts.set(key, matchCountForIndexRow(row, terms, titleL));
     }
   }
-  return out;
+  return { paths, counts };
 }
 
 /**
  * @param {{ path: string, label: string }[]} entries
  * @param {string} q
- * @returns {Set<string>} normalized path keys
+ * @returns {{ paths: Set<string>, counts: Map<string, number> }}
  */
-function matchingPathsFromNavLabels(/** @type {{ path: string, label: string }[]} */ entries, /** @type {string} */ q) {
+function getMatchResultFromNavLabels(/** @type {{ path: string, label: string }[]} */ entries, /** @type {string} */ q) {
   const t = String(q)
     .trim()
     .toLowerCase();
-  const out = new Set();
+  const paths = new Set();
+  const counts = new Map();
   if (!t) {
-    return out;
+    return { paths, counts };
   }
   const terms = t.split(/\s+/).filter((s) => s.length > 0);
   if (terms.length === 0) {
-    return out;
+    return { paths, counts };
   }
   for (const e of entries) {
     const l = (e.label || "").toLowerCase();
     if (terms.every((term) => l.includes(term))) {
-      out.add(norm(e.path));
+      const key = norm(e.path);
+      paths.add(key);
+      counts.set(key, matchCountForLabel(e, terms));
     }
   }
-  return out;
+  return { paths, counts };
 }
 
 /**
- * @param {{ onFilterChange: (paths: Set | null, query: string) => void }} actions
+ * @param {IndexRow[]} index
+ * @param {string} q
+ * @returns {Set<string>}
+ */
+export function matchingPathsForQuery(/** @type {IndexRow[]} */ index, /** @type {string} */ q) {
+  return getMatchResultFromIndex(index, q).paths;
+}
+
+/**
+ * @param {{ onFilterChange: (paths: Set | null, query: string, pathCounts: Map | null) => void }} actions
  * @param {string} importMetaUrl
  * @param {{ path: string, label: string }[]} entries
  * @returns {{ root: HTMLElement, getIndex: () => IndexRow[] }}
  */
-export function setupNavSearch(/** @type {{ onFilterChange: (paths: Set | null, query: string) => void }} */ actions, /** @type {string} */ importMetaUrl, /** @type {{ path: string, label: string }[]} */ entries) {
+export function setupNavSearch(/** @type {{ onFilterChange: (paths: Set | null, query: string, pathCounts: Map | null) => void }} */ actions, /** @type {string} */ importMetaUrl, /** @type {{ path: string, label: string }[]} */ entries) {
   const { onFilterChange } = actions;
 
   const block = document.createElement("div");
@@ -243,7 +317,7 @@ export function setupNavSearch(/** @type {{ onFilterChange: (paths: Set | null, 
     indexLoading = true;
     if (input.value.trim()) {
       setStatus("Indexing…");
-      onFilterChange(null, input.value.trim());
+      onFilterChange(null, input.value.trim(), null);
     } else {
       idleStatus();
     }
@@ -274,27 +348,49 @@ export function setupNavSearch(/** @type {{ onFilterChange: (paths: Set | null, 
     }
   }
 
+  function sumCounts(/** @type {Map<string, number>} */ m) {
+    let s = 0;
+    for (const v of m.values()) {
+      s += v;
+    }
+    return s;
+  }
+
   function applyFilter() {
     const q = input.value;
     const qt = q.trim();
     if (!qt) {
-      onFilterChange(null, "");
+      onFilterChange(null, "", null);
       idleStatus();
       return;
     }
     if (indexLoading) {
-      onFilterChange(null, qt);
+      onFilterChange(null, qt, null);
       setStatus("Indexing…");
       return;
     }
     if (index.length) {
-      const paths = matchingPathsForQuery(index, q);
-      onFilterChange(paths, qt);
-      setStatus(paths.size ? `Showing ${paths.size} page${paths.size === 1 ? "" : "s"}` : "No matches");
+      const { paths, counts } = getMatchResultFromIndex(index, q);
+      onFilterChange(paths, qt, counts);
+      if (paths.size) {
+        const total = sumCounts(counts);
+        setStatus(
+          `${paths.size} page${paths.size === 1 ? "" : "s"} · ${total} match${total === 1 ? "" : "es"}`
+        );
+      } else {
+        setStatus("No matches");
+      }
     } else {
-      const paths = matchingPathsFromNavLabels(entries, q);
-      onFilterChange(paths, qt);
-      setStatus(paths.size ? `Showing ${paths.size} (nav title only, focus to index)` : "No matches");
+      const { paths, counts } = getMatchResultFromNavLabels(entries, q);
+      onFilterChange(paths, qt, counts);
+      if (paths.size) {
+        const total = sumCounts(counts);
+        setStatus(
+          `${paths.size} page${paths.size === 1 ? "" : "s"} · ${total} match${total === 1 ? "" : "es"} (nav label only, focus to index)`
+        );
+      } else {
+        setStatus("No matches");
+      }
     }
   }
 

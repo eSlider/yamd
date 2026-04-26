@@ -38,6 +38,8 @@ let navSearch = null;
 let pathFilter = null;
 /** @type {string} — current filter text for <mark> in nav labels; empty = no highlight */
 let pathFilterQuery = "";
+/** @type {Map<string, number> | null} — per-page min term counts (normalized path → count) when filtering */
+let pathFilterCounts = null;
 
 /**
  * @param {() => void} fn
@@ -123,9 +125,10 @@ function drawNav(/** @type {string} */ rel) {
     const entries = collectPageEntriesForSearch(nav.items, nav.defaultPath);
     navSearch = setupNavSearch(
       {
-        onFilterChange(/** @type {Set<string> | null} */ paths, /** @type {string} */ query) {
+        onFilterChange(/** @type {Set<string> | null} */ paths, /** @type {string} */ query, /** @type {Map | null} */ pathCounts) {
           pathFilter = paths;
           pathFilterQuery = query || "";
+          pathFilterCounts = pathCounts;
           drawNav(currentLogicalPath());
         },
       },
@@ -147,7 +150,8 @@ function drawNav(/** @type {string} */ rel) {
       void go(p);
     },
     pathFilter,
-    pathFilterQuery
+    pathFilterQuery,
+    pathFilterCounts
   );
 }
 

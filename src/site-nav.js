@@ -315,31 +315,40 @@ function mergeMatchRanges(/** @type {string} */ text, /** @type {string[]} */ te
  * @param {HTMLElement} el
  * @param {string} text
  * @param {string[]} highlightTerms — lowercased, non-empty
+ * @param {number|undefined} matchCount — if set, appends " (N)" for total query matches in that page
  */
-function setNavTitleWithHighlights(/** @type {HTMLElement} */ el, /** @type {string} */ text, /** @type {string[]} */ highlightTerms) {
+function setNavTitleWithHighlights(/** @type {HTMLElement} */ el, /** @type {string} */ text, /** @type {string[]} */ highlightTerms, /** @type {number|undefined} */ matchCount) {
   el.textContent = "";
   if (!highlightTerms.length) {
     el.appendChild(document.createTextNode(text));
-    return;
-  }
-  const merged = mergeMatchRanges(text, highlightTerms);
-  if (!merged || merged.length === 0) {
-    el.appendChild(document.createTextNode(text));
-    return;
-  }
-  let pos = 0;
-  for (const [a, b] of merged) {
-    if (pos < a) {
-      el.appendChild(document.createTextNode(text.slice(pos, a)));
+  } else {
+    const merged = mergeMatchRanges(text, highlightTerms);
+    if (!merged || merged.length === 0) {
+      el.appendChild(document.createTextNode(text));
+    } else {
+      let pos = 0;
+      for (const [a, b] of merged) {
+        if (pos < a) {
+          el.appendChild(document.createTextNode(text.slice(pos, a)));
+        }
+        const mark = document.createElement("mark");
+        mark.className = "yamd-nav__mark";
+        mark.appendChild(document.createTextNode(text.slice(a, b)));
+        el.appendChild(mark);
+        pos = b;
+      }
+      if (pos < text.length) {
+        el.appendChild(document.createTextNode(text.slice(pos)));
+      }
     }
-    const mark = document.createElement("mark");
-    mark.className = "yamd-nav__mark";
-    mark.appendChild(document.createTextNode(text.slice(a, b)));
-    el.appendChild(mark);
-    pos = b;
   }
-  if (pos < text.length) {
-    el.appendChild(document.createTextNode(text.slice(pos)));
+  if (typeof matchCount === "number") {
+    el.appendChild(document.createTextNode(" ("));
+    const c = document.createElement("span");
+    c.className = "yamd-nav__matchcount";
+    c.textContent = String(matchCount);
+    el.appendChild(c);
+    el.appendChild(document.createTextNode(")"));
   }
 }
 
@@ -372,8 +381,17 @@ function hasNavMatch(/** @type {NavItem} */ n, /** @type {Set<string>} */ pathFi
  * @param {(p: string) => void} onNavigate
  * @param {Set<string> | null} [pathFilter] — if set, filter nav to matching paths
  * @param {string} [highlightQuery] — if non-empty, mark matching substrings in nav labels (case-insensitive, all words)
+ * @param {Map<string, number> | null} [pathMatchCounts] — normalized path → per-page match count for filter suffix " (N)"
  */
-export function renderNavTree(el, items, currentPath, onNavigate, pathFilter, highlightQuery) {
+export function renderNavTree(
+  el,
+  items,
+  currentPath,
+  onNavigate,
+  pathFilter,
+  highlightQuery,
+  pathMatchCounts
+) {
   el.textContent = "";
   const nav = document.createElement("nav");
   nav.className = "yamd-nav";
@@ -386,8 +404,9 @@ export function renderNavTree(el, items, currentPath, onNavigate, pathFilter, hi
     .toLowerCase()
     .split(/\s+/)
     .filter((s) => s.length > 0);
+  const pmc = pathMatchCounts && pathMatchCounts.size ? pathMatchCounts : null;
   for (const n of items) {
-    const li = renderNavItem(n, cNorm, onNavigate, pathFilter, hTerms);
+    const li = renderNavItem(n, cNorm, onNavigate, pathFilter, hTerms, pmc);
     if (li) {
       ul.appendChild(li);
     }
@@ -402,17 +421,19 @@ export function renderNavTree(el, items, currentPath, onNavigate, pathFilter, hi
  * @param {(p: string) => void} onNavigate
  * @param {Set<string> | null} pathFilter
  * @param {string[]} highlightTerms — lowercased search tokens for <mark> in titles
+ * @param {Map<string, number> | null} pathMatchCounts
  */
-function renderNavItem(/** @type {NavItem} */ n, cNorm, onNavigate, pathFilter, highlightTerms) {
+function renderNavItem(/** @type {NavItem} */ n, cNorm, onNavigate, pathFilter, highlightTerms, pathMatchCounts) {
   if (pathFilter != null && !hasNavMatch(n, pathFilter)) {
     return null;
   }
   const li = document.createElement("li");
   li.className = "yamd-nav__item";
+  const mCount = n.path && pathMatchCounts ? pathMatchCounts.get(norm(n.path)) : undefined;
   if (n.path) {
     const a = document.createElement("a");
     a.className = "yamd-nav__link" + (n.items && n.items.length ? " yamd-nav__link--branch" : "");
-    setNavTitleWithHighlights(a, n.title, highlightTerms);
+    setNavTitleWithHighlights(a, n.title, highlightTerms, mCount);
     a.href = pathToHref(n.path);
     a.dataset.path = n.path;
     if (cNorm && norm(n.path) === cNorm) {
@@ -429,14 +450,14 @@ function renderNavItem(/** @type {NavItem} */ n, cNorm, onNavigate, pathFilter, 
   } else {
     const t = document.createElement("span");
     t.className = "yamd-nav__label";
-    setNavTitleWithHighlights(t, n.title, highlightTerms);
+    setNavTitleWithHighlights(t, n.title, highlightTerms, undefined);
     li.appendChild(t);
   }
   if (n.items && n.items.length) {
     const sub = document.createElement("ul");
     sub.className = "yamd-nav__sub";
     for (const c of n.items) {
-      const ch = renderNavItem(c, cNorm, onNavigate, pathFilter, highlightTerms);
+      const ch = renderNavItem(c, cNorm, onNavigate, pathFilter, highlightTerms, pathMatchCounts);
       if (ch) {
         sub.appendChild(ch);
       }
