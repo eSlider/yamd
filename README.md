@@ -1,6 +1,8 @@
 # yamd
 
-**Yet another markdown** — a small, **in-browser** documentation site for projects that already speak **Markdown** and **YAML**. You write and organize pages under `content/`, list them in `pages.yml`, and host the result as static files. No app server required for readers.
+**Yet another markdown** — a small, **in-browser** documentation site for projects that already speak **Markdown** and **YAML**.
+
+You write and organize pages under `content/`, list them in `pages.yml`, and host the result as static files. No app server required for readers.
 
 <p>
   <a href="https://github.com/eSlider/yamd/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
@@ -16,10 +18,10 @@
 
 ## Why this exists
 
-- **You stay in content**, not a framework. Pages are **GitHub-Flavored Markdown** (plus optional frontmatter and fenced ` ```ui` blocks for forms). The shell loads once; you refresh when files change.
+- **You stay in content**, not a framework. Pages are **GitHub-Flavored Markdown**. The shell loads once; you refresh when files change.
 - **Ships like any static site** — drop the folder on GitHub Pages, Netlify, S3, or your own host. The engine in `src/*.js` runs in the reader’s browser; there is no server-side render step for the app.
 - **The manual lives beside your docs** — philosophy, features, how routing works, local run, deploy, and security expectations are all in [`content/docs/`](content/docs/) and linked from the left nav. Start at [`content/docs/index.md`](content/docs/index.md).
-- **Search** in the sidebar indexes everything listed in [`pages.yml`](pages.yml) when you focus the search field (no upfront fetch; see [Get started](https://eSlider.github.io/yamd/#docs/get-started)).
+- **Sidebar filter** — With `pages.yml` nav, a field at the top of the tree **focus loads** a text index of listed pages (nav titles, frontmatter `title`, and body; refetched on each focus). As you type, the **nav tree is narrowed** to matches—no separate result list—and **matching words in labels are highlighted** (`<mark>`). See [Get started](https://eSlider.github.io/yamd/#docs/get-started) and [Features](https://eSlider.github.io/yamd/#docs/features).
 
 ## Try it in a minute
 
@@ -31,7 +33,7 @@ cd yamd
 npm run dev
 ```
 
-Open `http://127.0.0.1:3456/` (or the port printed in the terminal). Edit files under `content/`, save, and refresh. Change the sidebar by editing [`pages.yml`](pages.yml).
+Open `http://127.0.0.1:3456/` (or the port printed in the terminal). Edit files under `content/`, save, and refresh. Change the sidebar with [`pages.yml`](pages.yml). After the first **focus** on the filter field, you can type to filter the tree and see highlights; press **`/`** to focus the field (when not typing in another input).
 
 **More options** (other tools, ports, and GitHub Pages): [Get started](https://eSlider.github.io/yamd/#docs/get-started) in the in-app manual.
 
@@ -39,11 +41,11 @@ Open `http://127.0.0.1:3456/` (or the port printed in the terminal). Edit files 
 
 The image is **built on GitHub** and stored in the **GitHub Container Registry** for this repository — not Docker Hub. After each push to `main`, the workflow [`.github/workflows/docker-publish.yml`](.github/workflows/docker-publish.yml) builds and pushes it.
 
-| What | Value |
-|------|--------|
-| **Registry** | `ghcr.io` ([About GHCR](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)) |
-| **Image (upstream repo)** | `ghcr.io/eslider/yamd:latest` — [package page](https://github.com/eSlider/yamd/pkgs/container/yamd) |
-| **Forks** | `ghcr.io/<your-github-username>/yamd:latest` (same path pattern; your fork must run the publish workflow) |
+| What                      | Value                                                                                                                                     |
+| ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| **Registry**              | `ghcr.io` ([About GHCR](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry)) |
+| **Image (upstream repo)** | `ghcr.io/eslider/yamd:latest` — [package page](https://github.com/eSlider/yamd/pkgs/container/yamd)                                       |
+| **Forks**                 | `ghcr.io/<your-github-username>/yamd:latest` (same path pattern; your fork must run the publish workflow)                                 |
 
 **Quick start** (from a clone of this repo, so `content/` and `pages.yml` exist):
 
@@ -62,14 +64,14 @@ Open **http://127.0.0.1:8080/** (host `8080` → container `3456`). No `docker p
 
 ## Where everything lives
 
-| In the repo | Role |
-|-------------|------|
-| [`content/`](content/) | Your Markdown and the bundled manual |
-| [`pages.yml`](pages.yml) | Nav tree and default landing page |
-| [`src/`](src/) | Small ESM “engine”: compile → render |
-| [`index.html`](index.html) | App shell, `importmap` for [marked](https://github.com/markedjs/marked) and [yaml](https://github.com/eemeli/yaml) from a CDN (no `npm install` required for the browser) |
+| In the repo                 | Role                                                                                                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`content/`](content/)      | Your Markdown and the bundled manual                                                                                                                                    |
+| [`pages.yml`](pages.yml)    | Nav tree and default landing page                                                                                                                                         |
+| [`src/`](src/)              | ESM engine: `document.js` / `render*`, `site-nav.js` (nav + path ↔ hash), `nav-search.js` (filter index on focus)                                                         |
+| [`index.html`](index.html)  | App shell, `importmap` for [marked](https://github.com/markedjs/marked) and [yaml](https://github.com/eemeli/yaml) from a CDN (no `npm install` required for the browser)   |
 
-> **For GitHub’s “About” field:** *yamd — yet another markdown: YAML + Markdown, humanized docs, zero backend. GFM, frontmatter, fenced `ui` blocks, compile → render, vanilla ESM, static deploy.*
+> **For GitHub’s “About” field:** _yamd — yet another markdown: YAML + Markdown, humanized docs, zero backend. GFM, frontmatter, fenced `ui` blocks, compile → render, vanilla ESM, static deploy._
 
 ## License
 
@@ -77,4 +79,4 @@ Open **http://127.0.0.1:8080/** (host `8080` → container `3456`). No `docker p
 
 ## Topics (for GitHub search)
 
-`yamd`, `markdown`, `yaml`, `es-modules`, `static-site`, `github-pages`, `github-actions`, `form`, `documentation`, `no-build`, `declarative`, `documentation-generator`
+`yamd`, `markdown`, `yaml`, `es-modules`, `static-site`, `github-pages`, `github-actions`, `form`, `documentation`, `no-build`, `declarative`, `documentation-generator`, `client-side-search`
