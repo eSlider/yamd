@@ -1,11 +1,11 @@
 ---
-title: "Framework — home"
-description: "Entry point for in-app documentation (content/ + pages.yml)."
+title: "yamd — home"
+description: "Yet another markdown: humanized in-app manual (content/ + pages.yml)."
 ---
 
-# Framework documentation
+# yamd documentation
 
-This site is the **framework manual**: Markdown in [`content/`](https://github.com/eSlider/md-frontend-framework/tree/main/content) and the [tree in `pages.yml`](https://github.com/eSlider/md-frontend-framework/blob/main/pages.yml) (left nav) define what you read here. No separate doc portal—**the app is the documentation**.
+**yamd** (*yet another markdown* — YAML + Markdown) is a **zero-backend documentation engine** for your `.md` files. This in-app **manual** is just Markdown in [`content/`](https://github.com/eSlider/yamd/tree/main/content) and the [nav tree in `pages.yml`](https://github.com/eSlider/yamd/blob/main/pages.yml); **the app is the documentation.**
 
 ## Read next
 
@@ -23,4 +23,4 @@ This site is the **framework manual**: Markdown in [`content/`](https://github.c
 - [Cookbook](#cookbook) · [Form patterns](#patterns) · [Research](#research)
 - [Specs](#specs) · [Idea (contract)](#idea)
 
-The [repository README](https://github.com/eSlider/md-frontend-framework#readme) stays for **badges, clone, license, and CI**; philosophy and “how it works” live **here** so you can link between pages like a normal static manual.
+The [repository README](https://github.com/eSlider/yamd#readme) stays for **badges, clone, license, and CI**; philosophy and “how it works” live **here** so you can link between pages like a normal static manual.

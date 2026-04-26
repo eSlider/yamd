@@ -5,7 +5,7 @@ description: "Design goals: content as contract, view as engine."
 
 # Philosophy
 
-[← Framework home](#docs/index)
+[← yamd manual](#docs/index)
 
 ## The question
 

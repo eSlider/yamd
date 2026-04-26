@@ -1,20 +1,21 @@
 {
-  "name": "md-frontend-framework",
+  "name": "yamd",
   "version": "0.1.0",
-  "description": "Client-side MD + YAML: zero backend, zero build, declarative-first. frontmatter, fenced ui blocks, compile/render. Vanilla ESM. Research prototype.",
+  "description": "yamd — yet another markdown (YAML + Markdown): a humanized documentation engine with zero backend for any project with .md files. GFM, frontmatter, fenced ui blocks, compile → render, vanilla ESM, GitHub Pages–ready.",
   "type": "module",
   "private": false,
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/eSlider/md-frontend-framework.git"
+    "url": "https://github.com/eSlider/yamd.git"
   },
-  "bugs": "https://github.com/eSlider/md-frontend-framework/issues",
-  "homepage": "https://eSlider.github.io/md-frontend-framework/",
+  "bugs": "https://github.com/eSlider/yamd/issues",
+  "homepage": "https://eSlider.github.io/yamd/",
   "scripts": {
     "dev": "node dev-server.js"
   },
   "keywords": [
+    "yamd",
     "markdown",
     "yaml",
     "esm",
@@ -22,6 +23,8 @@
     "github-pages",
     "github-actions",
     "declarative",
-    "forms"
+    "forms",
+    "documentation",
+    "no-backend"
   ]
 }

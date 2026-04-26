@@ -3,7 +3,7 @@
 default_path: content/docs/index.md
 
 nav:
-  - title: Framework
+  - title: yamd
     path: content/docs/index.md
     items:
       - title: Philosophy

@@ -5,7 +5,7 @@ description: "Why this prototype exists (short)."
 
 # Research
 
-[← Framework home](#docs/index) · [Philosophy](#docs/philosophy)
+[← yamd manual](#docs/index) · [Philosophy](#docs/philosophy)
 
 The pipeline is a **string in, DOM out** contract: `compile` then `render`, with theming in host CSS. That keeps content delivery (static files, API, CMS) separate from the view.
 

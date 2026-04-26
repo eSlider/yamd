@@ -5,7 +5,7 @@ description: "Field types in ui blocks."
 
 # Form patterns
 
-[← Framework home](#docs/index) · [Features](#docs/features) · [Live demo](#example)
+[← yamd manual](#docs/index) · [Features](#docs/features) · [Live demo](#example)
 
 | YAML `type` | Renders as |
 |-------------|------------|

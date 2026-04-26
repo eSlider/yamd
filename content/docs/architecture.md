@@ -5,7 +5,7 @@ description: "compile → parts → render; modules in src/."
 
 # Architecture
 
-[← Framework home](#docs/index)
+[← yamd manual](#docs/index)
 
 ## Data flow
 
@@ -32,6 +32,6 @@ flowchart LR
 | `site-nav.js` | `pages.yml`, hash ↔ path, left nav; used from `main.js` |
 | `main.js` | Fetch `pages.yml` + markdown, routing (`hashchange` / `popstate`, legacy `?path=` once) |
 
-Source: repo [`src/`](https://github.com/eSlider/md-frontend-framework/tree/main/src) (not served as a directory index on the static site).
+Source: repo [`src/`](https://github.com/eSlider/yamd/tree/main/src) (not served as a directory index on the static site).
 
 **Related:** [Site map & routing](#docs/site-map) · [Get started](#docs/get-started) · [Specs](#specs)

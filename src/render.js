@@ -1,6 +1,6 @@
 import { renderUiModel } from "./render-ui.js";
 
-const TITLE = "MD + UI";
+const TITLE = "yamd";
 
 export function render(root, { meta, parts }) {
   const act = typeof meta.form_action === "string" ? meta.form_action : undefined;
