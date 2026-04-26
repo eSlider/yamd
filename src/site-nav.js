@@ -1,4 +1,4 @@
-import yaml from "yaml";
+import yaml from "https://esm.sh/yaml@2.8.0?bundle";
 
 /**
  * @typedef {{ title: string, path?: string, items?: import("./site-nav.js").NavItem[] }} NavItem
