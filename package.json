@@ -1,0 +1,25 @@
+{
+  "name": "md-frontend-framework",
+  "version": "0.1.0",
+  "description": "Client-side MD + YAML: frontmatter, fenced ui blocks, compile/render contract. Vanilla ESM, no bundle. Research prototype.",
+  "type": "module",
+  "private": false,
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/eSlider/md-frontend-framework.git"
+  },
+  "bugs": "https://github.com/eSlider/md-frontend-framework/issues",
+  "homepage": "https://eSlider.github.io/md-frontend-framework/",
+  "scripts": {
+    "dev": "node dev-server.js"
+  },
+  "keywords": [
+    "markdown",
+    "yaml",
+    "esm",
+    "static-site",
+    "github-pages",
+    "forms"
+  ]
+}

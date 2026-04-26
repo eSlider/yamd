@@ -1,0 +1,166 @@
+:root {
+  color-scheme: light dark;
+  --mdui-bg: canvas;
+  --mdui-fg: canvasText;
+  --mdui-muted: #666;
+  --mdui-border: color-mix(in srgb, canvasText 18%, transparent);
+  --mdui-radius: 10px;
+  --mdui-font: system-ui, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif;
+  --mdui-mono: ui-monospace, "Cascadia Code", "Fira Code", Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--mdui-bg);
+  color: var(--mdui-fg);
+  font: 16px/1.5 var(--mdui-font);
+}
+
+.mdui-app {
+  max-width: 52rem;
+  margin: 0 auto;
+  padding: 1.5rem 1rem 2.5rem;
+}
+
+.mdui-loading,
+.mdui-error {
+  color: var(--mdui-muted);
+}
+
+.mdui-article__title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  line-height: 1.2;
+  margin: 0 0 1rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.mdui-md {
+  margin: 0 0 1.25rem;
+}
+
+.mdui-md a {
+  color: inherit;
+  text-decoration-skip-ink: auto;
+}
+
+.mdui-md pre,
+.mdui-md code {
+  font-family: var(--mdui-mono);
+  font-size: 0.9em;
+}
+
+.mdui-md pre {
+  padding: 0.85rem 1rem;
+  border: 1px solid var(--mdui-border);
+  border-radius: var(--mdui-radius);
+  overflow: auto;
+  background: color-mix(in srgb, canvas 92%, black 8%);
+}
+
+.mdui-ui-block {
+  margin: 1.5rem 0;
+}
+
+.mdui-ui {
+  border: 1px solid var(--mdui-border);
+  border-radius: var(--mdui-radius);
+  padding: 1rem 1.1rem 1.15rem;
+  background: color-mix(in srgb, canvas 88%, white 0%);
+}
+
+.mdui-form-nested {
+  border: 1px dashed var(--mdui-border);
+  border-radius: 8px;
+  margin: 0.2rem 0 0.5rem;
+  min-width: 0;
+  padding: 0.4rem 0.65rem 0.5rem;
+}
+
+.mdui-form-nested__legend {
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0 0.1rem;
+}
+
+.mdui-ui__stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.mdui-control__label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+}
+
+.mdui-control input,
+.mdui-control textarea,
+.mdui-control select {
+  width: 100%;
+  max-width: 28rem;
+  font: inherit;
+  padding: 0.4rem 0.55rem;
+  border: 1px solid var(--mdui-border);
+  border-radius: 8px;
+  background: canvas;
+  color: inherit;
+}
+
+.mdui-control textarea {
+  min-height: 5rem;
+  resize: vertical;
+}
+
+.mdui-control--checkbox .mdui-control__inline,
+.mdui-control--radio .mdui-control__inline {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  max-width: none;
+}
+
+.mdui-control--checkbox .mdui-control__label,
+.mdui-control--radio .mdui-control__label {
+  display: none;
+}
+
+.mdui-btn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.45rem 0.95rem;
+  border: 1px solid var(--mdui-border);
+  border-radius: 999px;
+  background: color-mix(in srgb, canvas 88%, currentColor 3%);
+  font: inherit;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.mdui-btn:hover {
+  filter: brightness(1.05);
+}
+
+.mdui-fieldset {
+  border: 1px solid var(--mdui-border);
+  border-radius: var(--mdui-radius);
+  margin: 0;
+  padding: 0.75rem 0.9rem 0.9rem;
+}
+
+.mdui-fieldset__legend {
+  padding: 0 0.2rem;
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mdui-btn:hover {
+    filter: none;
+  }
+}

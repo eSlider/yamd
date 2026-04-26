@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MD + frontmatter + ui (ESM)</title>
+    <link rel="stylesheet" href="/src/app.css" />
+  </head>
+  <body>
+    <div id="mdui-content" class="mdui-app">
+      <p class="mdui-loading">Loading…</p>
+    </div>
+    <script type="importmap">
+      {
+        "imports": {
+          "marked": "https://esm.sh/marked@16.0.0",
+          "yaml": "https://esm.sh/yaml@2.8.0?bundle"
+        }
+      }
+    </script>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

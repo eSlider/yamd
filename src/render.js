@@ -1,0 +1,36 @@
+import { renderUiModel } from "./render-ui.js";
+
+const TITLE = "MD + UI";
+
+export function render(root, { meta, parts }) {
+  const act = typeof meta.form_action === "string" ? meta.form_action : undefined;
+  const meth = typeof meta.form_method === "string" ? meta.form_method : undefined;
+
+  if (meta.title) {
+    document.title = String(meta.title) + " · mdui";
+  }
+
+  const a = document.createElement("article");
+  a.className = "mdui-article";
+  const h1 = document.createElement("h1");
+  h1.className = "mdui-article__title";
+  h1.textContent = String(meta.title || TITLE);
+  a.appendChild(h1);
+
+  for (const p of parts) {
+    if (p.type === "md") {
+      const s = document.createElement("section");
+      s.className = "mdui-md";
+      s.innerHTML = p.html;
+      a.appendChild(s);
+    } else {
+      const s = document.createElement("section");
+      s.className = "mdui-ui-block";
+      s.appendChild(
+        renderUiModel(p.data, { action: act, method: meth })
+      );
+      a.appendChild(s);
+    }
+  }
+  root.replaceChildren(a);
+}
