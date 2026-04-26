@@ -1,4 +1,5 @@
-# Landing when ?path= is absent: first `path` in the tree, or this key:
+# Landing when no hash: first `path` in the tree, or this key.
+# Deep links use `#content/foo` (no `.md` in the address bar) → fetches `content/foo.md`
 default_path: content/example.md
 
 nav:

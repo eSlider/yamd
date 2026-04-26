@@ -1,7 +1,5 @@
 import yaml from "yaml";
 
-const Q = "path";
-
 /**
  * @typedef {{ title: string, path?: string, items?: import("./site-nav.js").NavItem[] }} NavItem
  */
@@ -115,22 +113,69 @@ export function norm(/** @type {string} */ s) {
 }
 
 /**
- * @param {string} [search] — e.g. window.location.search
+ * Hash deep-link, no `.md` in the bar: `#content/foo/bar` → fetch `content/foo/bar.md`
+ * @param {string} [locHash] e.g. "#content/start" (optional; default `location.hash`)
  */
-export function getPathFromQuery(search) {
-  const q = search == null ? (typeof location !== "undefined" ? location.search : "") : search;
-  if (!q || q === "?" || q === "") {
+export function getContentPathFromHash(locHash) {
+  const h = (locHash == null && typeof location !== "undefined" ? location.hash : locHash) || "";
+  if (!h || h === "#") {
     return undefined;
   }
-  return new URLSearchParams(q[0] === "?" ? q : "?" + q).get(Q) || undefined;
+  return hashToContentPath(h);
 }
 
 /**
+ * @param {string} h — e.g. "#content/start" or "content/start"
+ * @returns {string|undefined} repo-relative `content/...md` or undefined
+ */
+function hashToContentPath(h) {
+  const raw = String(h)
+    .replace(/^#+/, "")
+    .replace(/^\//, "")
+    .trim();
+  if (!raw || raw.includes("..") || /\\/.test(raw)) {
+    return undefined;
+  }
+  if (raw.endsWith(".md")) {
+    return norm(raw);
+  }
+  return norm(raw) + ".md";
+}
+
+/**
+ * @param {string} contentPath — e.g. `content/start.md`
+ * @returns {string} e.g. `#content/start`
+ */
+export function contentPathToHash(contentPath) {
+  const s = String(contentPath)
+    .replace(/\.md$/, "")
+    .replace(/^\s+|\s+$/g, "");
+  if (!s) {
+    return "#";
+  }
+  return "#" + norm(s);
+}
+
+/**
+ * `pathname` + `search` + deep hash (for `history.pushState` / `replaceState`).
  * @param {string} contentPath
  */
-// Query-only URL: same directory as this page (works for `.../user/repo/` on GitHub Pages, not a `/`-root href).
-export function setPathInCurrentUrl(contentPath) {
-  return "?" + new URLSearchParams({ [Q]: contentPath }).toString();
+export function getHistoryUrlForContent(contentPath) {
+  if (typeof location === "undefined") {
+    return contentPathToHash(contentPath);
+  }
+  return location.pathname + searchWithoutLegacyPath() + contentPathToHash(contentPath);
+}
+
+/** Preserves non-`path` query params; drops legacy `?path=`. */
+function searchWithoutLegacyPath() {
+  if (typeof location === "undefined") {
+    return "";
+  }
+  const p = new URLSearchParams(location.search);
+  p.delete("path");
+  const s = p.toString();
+  return s ? "?" + s : "";
 }
 
 /**
@@ -205,7 +250,7 @@ function renderNavItem(n, cNorm, onNavigate) {
 }
 
 function pathToHref(contentPath) {
-  return "?" + new URLSearchParams({ [Q]: contentPath }).toString();
+  return contentPathToHash(contentPath);
 }
 
 /**

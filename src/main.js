@@ -2,12 +2,14 @@ import { compile } from "./document.js";
 import { render } from "./render.js";
 import {
   coalescePath,
+  contentPathToHash,
   contentUrl,
-  getPathFromQuery,
+  getContentPathFromHash,
+  getHistoryUrlForContent,
+  norm,
   parsePagesYmlText,
   pickInitialPath,
   renderNavTree,
-  setPathInCurrentUrl,
 } from "./site-nav.js";
 
 const PAGES = new URL("../pages.yml", import.meta.url);
@@ -22,6 +24,23 @@ const FALLBACK_MD = "content/example.md";
 
 const nav = { defaultPath: null, items: [] };
 let hasNav = false;
+
+function migrateLegacyPathQuery() {
+  if (typeof location === "undefined") {
+    return;
+  }
+  const ps = new URLSearchParams(window.location.search);
+  const p = ps.get("path");
+  if (!p) {
+    return;
+  }
+  const decoded = norm(decodeURIComponent(p));
+  const withMd = decoded.toLowerCase().endsWith(".md") ? decoded : decoded + ".md";
+  ps.delete("path");
+  const s = ps.toString();
+  const base = location.pathname + (s ? "?" + s : "");
+  history.replaceState(null, "", base + contentPathToHash(withMd));
+}
 
 async function loadTree() {
   try {
@@ -45,11 +64,14 @@ async function loadTree() {
 }
 
 function currentLogicalPath() {
-  const q = getPathFromQuery();
+  const fromHash = getContentPathFromHash();
   if (hasNav) {
-    return coalescePath(nav.items, q, nav.defaultPath, FALLBACK_MD);
+    return coalescePath(nav.items, fromHash, nav.defaultPath, FALLBACK_MD);
   }
-  return (q && q.trim() ? q.trim() : pickInitialPath([], nav.defaultPath, FALLBACK_MD)) || FALLBACK_MD;
+  return (
+    (fromHash && fromHash.trim() ? fromHash.trim() : pickInitialPath([], nav.defaultPath, FALLBACK_MD)) ||
+    FALLBACK_MD
+  );
 }
 
 function drawNav(/** @type {string} */ rel) {
@@ -57,7 +79,7 @@ function drawNav(/** @type {string} */ rel) {
     return;
   }
   renderNavTree(navHost, nav.items, rel, (p) => {
-    const u = setPathInCurrentUrl(p);
+    const u = getHistoryUrlForContent(p);
     history.pushState({ p }, "", u);
     go(p);
   });
@@ -96,8 +118,13 @@ window.addEventListener("popstate", () => {
   go();
 });
 
+window.addEventListener("hashchange", () => {
+  go();
+});
+
 void (async () => {
   try {
+    migrateLegacyPathQuery();
     await loadTree();
     await go();
   } catch (e) {
