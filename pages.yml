@@ -10,8 +10,12 @@ nav:
         path: content/docs/philosophy.md
       - title: Features
         path: content/docs/features.md
+      - title: Security
+        path: content/docs/security.md
       - title: Architecture
         path: content/docs/architecture.md
+      - title: Architecture ASR
+        path: content/docs/architecture-asr.md
       - title: "Site map & routing"
         path: content/docs/site-map.md
       - title: Get started

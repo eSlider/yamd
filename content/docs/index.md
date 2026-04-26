@@ -15,7 +15,8 @@ description: "Yet another markdown: humanized in-app manual (content/ + pages.ym
 | [Features](#docs/features) | **Zero backend**, **zero build**, **declarative-first**, **zero [author] code** (explained precisely) |
 | [Architecture](#docs/architecture) | `compile` / `render` flow, module roles |
 | [Site map & routing](#docs/site-map) | `pages.yml`, deep links (e.g. `#examples/cookbook`), `default_path` |
-| [Get started](#docs/get-started) | Local run, first edits, where the engine lives |
+| [Get started](#docs/get-started) | Local run, static servers, deploy, first edits |
+| [Security](#docs/security) | Trust, `innerHTML`, untrusted markdown |
 
 ## Examples (outside this section)
 
@@ -23,4 +24,4 @@ description: "Yet another markdown: humanized in-app manual (content/ + pages.ym
 - [Forms](#examples/forms) · [Cookbook](#examples/cookbook) · [Form patterns](#examples/patterns) · [Research](#examples/research)
 - [Specs](#specs) · [Idea (contract)](#idea)
 
-The [repository README](https://github.com/eSlider/yamd#readme) stays for **badges, clone, license, and CI**; philosophy and “how it works” live **here** so you can link between pages like a normal static manual.
+The [repository README](https://github.com/eSlider/yamd#readme) is the short on-ramp: **what yamd is**, **clone and run in one minute**, and links into this manual. Deeper how-it-works and ops detail live **here** so you can link between pages like a normal static manual.

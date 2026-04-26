@@ -16,6 +16,6 @@ These labels describe **design intent**, not marketing absolutes.
 | **Zero [author] code** | **You** (author) do not add application code to ship a page: only **Markdown**, **YAML** (frontmatter + ` ```ui` blocks), and **`pages.yml`**. The **engine** in `src/*.js` is shared and prewritten. |
 | **Declarative-first** | The **source of truth** is **data**: UI in fenced blocks; the **site tree** in `pages.yml`; forms use `type`, `items`, `action` / `method`—**declare** what you need, the runtime maps to the DOM. |
 
-**Not claimed:** that the repo contains *no* JavaScript (it does), or that **untrusted** markdown is safe without a sanitizer—see the [security section in the README](https://github.com/eSlider/yamd#security-note).
+**Not claimed:** that the repo contains *no* JavaScript (it does), or that **untrusted** markdown is safe without a sanitizer—see [Security](#docs/security).
 
 **Related:** [Philosophy](#docs/philosophy) · [Architecture](#docs/architecture)
