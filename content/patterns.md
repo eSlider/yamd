@@ -5,6 +5,8 @@ description: "Field types in ui blocks."
 
 # Form patterns
 
+[← Framework home](#content/docs/index) · [Features](#content/docs/features) · [Live demo](#content/example)
+
 | YAML `type` | Renders as |
 |-------------|------------|
 | `input` + `variant: email` | `input` |

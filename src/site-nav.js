@@ -48,13 +48,13 @@ function sanitizeItem(/** @type {Record<string, unknown> | null} */ x) {
 /**
  * @param {NavItem[]} items
  * @param {string | null} [ymlDefault]
- * @param {string} [fallback] — when tree has no paths, e.g. "content/example.md"
+ * @param {string} [fallback] — when tree has no paths, e.g. "content/docs/index.md"
  */
 export function pickInitialPath(items, ymlDefault, fallback) {
   if (ymlDefault && String(ymlDefault).trim()) {
     return String(ymlDefault).trim();
   }
-  return firstPathInTree(items) || fallback || "content/example.md";
+  return firstPathInTree(items) || fallback || "content/docs/index.md";
 }
 
 /**

@@ -1,8 +1,21 @@
-# Landing when no hash: first `path` in the tree, or this key.
-# Deep links use `#content/foo` (no `.md` in the address bar) → fetches `content/foo.md`
-default_path: content/example.md
+# Landing when no hash: this key, or first `path` in the tree.
+# Deep links: `#content/foo` (no `.md`) → fetches `content/foo.md`
+default_path: content/docs/index.md
 
 nav:
+  - title: Framework
+    path: content/docs/index.md
+    items:
+      - title: Philosophy
+        path: content/docs/philosophy.md
+      - title: Features
+        path: content/docs/features.md
+      - title: Architecture
+        path: content/docs/architecture.md
+      - title: "Site map & routing"
+        path: content/docs/site-map.md
+      - title: Get started
+        path: content/docs/get-started.md
   - title: Demo
     path: content/example.md
   - title: Examples
@@ -19,8 +32,3 @@ nav:
         path: content/specs.md
       - title: Idea
         path: content/idea.md
-  - title: Documentation
-    path: content/index.md
-    items:
-      - title: Get started
-        path: content/start.md

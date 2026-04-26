@@ -1,7 +1,8 @@
 ---
-title: "Documentation"
+title: "Documentation (redirect)"
+description: "Framework manual now lives under content/docs/."
 ---
 
 # Documentation
 
-Use **Documentation** in the left nav. Subpages are listed when the parent has `items` in `pages.yml`.
+The in-app manual is **[Framework home](#content/docs/index)** — philosophy, features, architecture, site map, and get started. This page remains for old hash links; use the nav under **Framework**.

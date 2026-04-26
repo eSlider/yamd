@@ -5,8 +5,10 @@ description: "Small patterns for pages.yml and forms."
 
 # Cookbook
 
+[← Framework home](#content/docs/index) · [Site map](#content/docs/site-map) · [Demo](#content/example)
+
 - **Navigation** — tree lives in `pages.yml`; paths are relative to the app base (`content/...`).
-- **Default page** — set `default_path: content/example.md` or put the file you want first in the nav.
+- **Default page** — set `default_path: content/docs/index.md` (or your landing file) in `pages.yml`.
 - **Forms** — use `type: form` with `action` / `method` and nested `items` (see [example](#content/example)).
 
 ## Nested group

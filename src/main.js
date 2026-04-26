@@ -20,7 +20,7 @@ if (!el) {
   throw new Error("#mdui-content");
 }
 
-const FALLBACK_MD = "content/example.md";
+const FALLBACK_MD = "content/docs/index.md";
 
 const nav = { defaultPath: null, items: [] };
 let hasNav = false;
