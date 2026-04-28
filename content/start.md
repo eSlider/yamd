@@ -1,63 +1,63 @@
 ---
-title: "Start here"
-description: "The fastest path from zero to a working docs site."
+title: "Get started (redirect)"
+description: "Use the yamd section of the nav for the up-to-date guide."
 ---
 
-# Docs that get out of your way
+# Get started
 
-**Markdown in. Static site out. Zero backend. Zero build step.**
+The maintained guide is **[Get started (yamd)](#docs/get-started)** in the **yamd** section of the nav.
 
-Most doc tools want you to learn them. **yamd** wants you to forget it exists.
+See also: [yamd manual](#docs/index) · [Site map & routing](#docs/site-map)
 
-You write `.md` files. You list them in one `pages.yml`. You ship a folder. That is the whole job.
+## Minimal `index.html` (shell)
 
-## Pick your path
+The app is a static shell: one `index.html` that loads **`./src/main.js`** as `type="module"`. The engine fetches `pages.yml` and your Markdown under `content/`.
 
-| You are... | Open this | Time |
-| --- | --- | --- |
-| Brand new here | [Product overview](#docs/index) | 2 min |
-| Ready to run it | [Get started](#docs/get-started) | 5 min |
-| Writing your first page | [Features and authoring model](#docs/features) | 10 min |
-| Curious how it works | [Architecture](#docs/architecture) | 15 min |
-| Shipping to production | [Security model](#docs/security) | 5 min |
+Example structure (simplified; match your local paths):
 
-## The reading flow that actually works
+```html
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>yamd</title>
+    <link rel="stylesheet" href="./src/app.css" />
+  </head>
+  <body>
+    <div class="yamd-shell">
+      <aside id="yamd-nav-wrap" class="yamd-shell__nav" hidden aria-label="Table of contents"></aside>
+      <div id="yamd-content" class="yamd-app yamd-shell__main" role="main">
+        <p class="yamd-loading">Loading…</p>
+      </div>  ^
+    </div>
+    <script type="module" src="./src/main.js"></script>
+  </body>
+</html>
+```
 
-1. **Get the mental model** — [Product overview](#docs/index)
-2. **Run it on your machine** — [Get started](#docs/get-started)
-3. **See where pages live** — [Information architecture](#docs/site-map)
-4. **Author with confidence** — [Features and authoring model](#docs/features)
-5. **Go deep when you need to** — [Architecture](#docs/architecture) and [Security model](#docs/security)
+Fenced ` ```html` blocks in this page are only **documentation**; you still need the real `index.html` in the project root to run the app.
 
-You can skip ahead. The docs are designed to survive non-linear reading.
+## Lazy Mermaid and Prism (pure JS, no build)
 
-## Why these sections exist
+After Markdown is turned into HTML, the runtime can **optionally** enhance fences — **only if** matching blocks exist (lazy `import` from a CDN; nothing runs on pages with plain prose only).
 
-| Section | What it answers | Open when |
-| --- | --- | --- |
-| **Start here** | Where do I even begin? | First visit, onboarding a teammate |
-| **Authoring guide** | How do I write a good page? | Editing content, planning structure |
-| **Technical reference** | How does it actually work? | Debugging, extending, auditing |
-| **Examples library** | Show me, do not tell me | Building pages by copy-paste |
-| **Product notes** | What was the original idea? | Product alignment and decisions |
+| Fences                              | What runs                                        | Loaded when                                                             |
+| ----------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------- |
+| ` ```mermaid`                       | Mermaid → SVG (diagrams)                         | a `pre > code.language-mermaid` is present                              |
+| ` ```html`, ` ```js`, ` ```yaml`, … | [Prism](https://prismjs.com/) (syntax highlight) | a `pre > code.language-*` is present (except `mermaid` — handled first) |
 
-## The 10-minute test drive
+Order: **Mermaid** runs first, then **Prism**, so ` ```mermaid` never goes through the highlighter. The implementation lives in `src/mermaid-lazy.js`, `src/prism-lazy.js`, and `src/lazy-enrichers.js` (all plain ES modules, no bundler required).
 
-- Read [Product overview](#docs/index). Decide if this is for you.
-- Run [Get started](#docs/get-started). Confirm it works on your box.
-- Open [Information architecture](#docs/site-map). Understand the map.
-- Read one page in [Examples library](#examples/forms). Steal what you need.
-- Skim [Security model](#docs/security). Know the rules before you publish.
+**JavaScript** example the highlighter can colour:
 
-If any of those steps takes more than two minutes, the docs are wrong, not you. Open an issue.
+```javascript
+// Entry is ./src/main.js
+import { compile } from "./document.js";
+// fetch pages.yml + content/*.md, then compile → render
+```
 
-## The rule every page in this manual follows
+**YAML** in a fence for illustration:
 
-Each page answers four questions, in this order:
-
-- **What is this?**
-- **Why does it matter?**
-- **How do I use it right now?**
-- **Where do I go next?**
-
-If a page wanders off that path, it gets rewritten. Hold us to it.
+```yaml
+default_path: content/index.md
+```
