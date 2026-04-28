@@ -18,7 +18,7 @@ import {
   rewriteLegacyContentHash,
 } from "./site-nav.js";
 
-const PAGES = new URL("../pages.yml", import.meta.url);
+const PAGES_CANDIDATES = [new URL("../content/pages.yml", import.meta.url), new URL("../pages.yml", import.meta.url)];
 
 /** @type {HTMLElement | null} */
 let el = null;
@@ -168,16 +168,19 @@ function migrateLegacyPathQuery() {
 }
 
 async function loadTree() {
-  try {
-    const r = await fetch(PAGES, { cache: "no-store" });
-    if (!r.ok) {
-      return;
+  for (const pagesUrl of PAGES_CANDIDATES) {
+    try {
+      const r = await fetch(pagesUrl, { cache: "no-store" });
+      if (!r.ok) {
+        continue;
+      }
+      const t = parsePagesYmlText(await r.text());
+      nav.defaultPath = t.defaultPath;
+      nav.items = t.items;
+      hasNav = t.items.length > 0;
+      break;
+    } catch {
     }
-    const t = parsePagesYmlText(await r.text());
-    nav.defaultPath = t.defaultPath;
-    nav.items = t.items;
-    hasNav = t.items.length > 0;
-  } catch {
   }
   if (navHost) {
     if (hasNav) {

@@ -49,18 +49,17 @@ The image is **built on GitHub** and stored in the **GitHub Container Registry**
 | **Image (upstream repo)** | `ghcr.io/eslider/yamd:latest` — [package page](https://github.com/eSlider/yamd/pkgs/container/yamd)                                       |
 | **Forks**                 | `ghcr.io/<your-github-username>/yamd:latest` (same path pattern; your fork must run the publish workflow)                                 |
 
-**Quick start** (from a clone of this repo, so `content/` and `pages.yml` exist):
+**Quick start** (from a clone of this repo, with your local `content/` mounted):
 
 ```bash
 docker pull ghcr.io/eslider/yamd:latest
 docker run --rm \
   -p 8080:3456 \
   -v "$PWD/content:/app/content" \
-  -v "$PWD/pages.yml:/app/pages.yml" \
   ghcr.io/eslider/yamd:latest
 ```
 
-Open **http://127.0.0.1:8080/** (host `8080` → container `3456`). No `docker pull` is required if the image is already local.
+Open **http://127.0.0.1:8080/** (host `8080` → container `3456`). If `content/pages.yml` is missing and there is more than one `.md` file under `content/`, the container generates `content/pages.yml` before serving. No `docker pull` is required if the image is already local.
 
 **Details** (Bun, optional mounts, `PORT`, private packages): in-app [Get started — Docker (GHCR / Bun)](https://eSlider.github.io/yamd/#docs/get-started) (section of the same name).
 

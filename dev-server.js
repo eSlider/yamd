@@ -17,6 +17,75 @@ const mime = {
   ".yaml": "text/yaml; charset=utf-8",
 };
 
+const contentDir = path.join(root, "content");
+const contentPagesYml = path.join(contentDir, "pages.yml");
+
+/**
+ * @param {string} dir
+ * @returns {Promise<string[]>}
+ */
+async function collectMarkdownFiles(dir) {
+  /** @type {string[]} */
+  const out = [];
+  const entries = await fs.readdir(dir, { withFileTypes: true }).catch(() => []);
+  for (const entry of entries) {
+    if (entry.name.startsWith(".")) {
+      continue;
+    }
+    const abs = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      const nested = await collectMarkdownFiles(abs);
+      out.push(...nested);
+      continue;
+    }
+    if (entry.isFile() && entry.name.toLowerCase().endsWith(".md")) {
+      out.push(abs);
+    }
+  }
+  return out;
+}
+
+/**
+ * @param {string} absPath
+ * @returns {string}
+ */
+function prettyTitleFromMarkdown(absPath) {
+  const base = path.basename(absPath, ".md");
+  return base
+    .replace(/[-_]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\b\w/g, (m) => m.toUpperCase());
+}
+
+/**
+ * @param {string[]} markdownFiles
+ * @returns {string}
+ */
+function buildPagesYml(markdownFiles) {
+  const sorted = [...markdownFiles].sort((a, b) => a.localeCompare(b));
+  const rel = sorted.map((abs) => path.posix.join("content", path.relative(contentDir, abs).split(path.sep).join("/")));
+  const lines = [`default_path: "${rel[0]}"`, "nav:"];
+  for (let i = 0; i < rel.length; i++) {
+    lines.push(`  - title: "${prettyTitleFromMarkdown(sorted[i]).replace(/"/g, '\\"')}"`);
+    lines.push(`    path: "${rel[i]}"`);
+  }
+  return lines.join("\n") + "\n";
+}
+
+async function ensureContentPagesYml() {
+  const exists = await fs.stat(contentPagesYml).then((st) => st.isFile()).catch(() => false);
+  if (exists) {
+    return;
+  }
+  const markdownFiles = await collectMarkdownFiles(contentDir);
+  if (markdownFiles.length <= 1) {
+    return;
+  }
+  await fs.writeFile(contentPagesYml, buildPagesYml(markdownFiles), "utf8");
+  console.error(`generated: ${path.posix.join("content", "pages.yml")}`);
+}
+
 const server = http.createServer(async (req, res) => {
   try {
     const u = new URL(req.url || "/", "http://127.0.0.1");
@@ -44,6 +113,9 @@ const server = http.createServer(async (req, res) => {
   }
 });
 
-server.listen(port, host, () => {
-  console.error(`http://${host === "0.0.0.0" ? "127.0.0.1" : host}:${port}`);
-});
+void (async () => {
+  await ensureContentPagesYml();
+  server.listen(port, host, () => {
+    console.error(`http://${host === "0.0.0.0" ? "127.0.0.1" : host}:${port}`);
+  });
+})();

@@ -1,4 +1,4 @@
-# Static yamd app + Bun HTTP server (dev-server.js). Mount content/ and pages.yml to customize without rebuild.
+# Static yamd app + Bun HTTP server (dev-server.js). Mount content/ to customize without rebuild.
 FROM oven/bun:1-alpine
 
 LABEL org.opencontainers.image.title="yamd" \

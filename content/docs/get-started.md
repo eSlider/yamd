@@ -23,9 +23,9 @@ That is the whole setup. No `npm install` of UI libraries. No build step. The br
 
 ## What just happened
 
-1. The page loaded `index.html` and one ES module entry point.
-2. The engine fetched `pages.yml` and the page named in `default_path`.
-3. Markdown was compiled to HTML and rendered into the article.
+1. The browser loaded `index.html`, `src/app.css`, and the ES module entry `src/main.js`.
+2. The app shell mounted: responsive menu header (`#menubar`), backdrop (`#backdrop`), theme toggle (`#theme-btn`), nav container (`#nav`), and content outlet (`#content`).
+3. The engine fetched `pages.yml` and the page named in `default_path`, then compiled Markdown to HTML in `#content`.
 
 There is nothing else. If something breaks, only those three steps can be wrong.
 
@@ -80,17 +80,16 @@ The image is published to the **GitHub Container Registry** (not Docker Hub) by 
 | **Upstream image** | `ghcr.io/eslider/yamd:latest` |
 | **Your fork** | `ghcr.io/<your-username>/yamd:latest` (after your Actions run pushes once) |
 
-Run it against your local `content/` and `pages.yml`:
+Run it against your local `content/`:
 
 ```bash
 docker run --rm \
   -p 8080:3456 \
   -v "$PWD/content:/app/content" \
-  -v "$PWD/pages.yml:/app/pages.yml" \
   ghcr.io/eslider/yamd:latest
 ```
 
-Open `http://127.0.0.1:8080/`. Drop the `-v` flags to preview the bundle that was baked into the image.
+Open `http://127.0.0.1:8080/`. If `content/pages.yml` is missing and your `content/` has more than one `.md` file, the container auto-generates `content/pages.yml` before serving.
 
 **Tuning:**
 
