@@ -30,7 +30,7 @@
   --active-bgcolor: var(--yellow);
 
   --radius: 10px;
-  --code-radius: 0.3125rem;
+  --code-radius: 0;
 
   --font: "Inter var", "InterVariable", "Inter", system-ui, ui-sans-serif, Roboto, "Open Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
   --mono: "Iosevka Extended", "jbmono", ui-monospace, "JetBrains Mono", "SF Mono", "Cascadia Code", Consolas, "Liberation Mono", Menlo, monospace;
@@ -432,7 +432,39 @@ html.nav-open #backdrop {
 .md > h5:first-child,
 .md > h6:first-child { margin-top: 0; }
 
-.md { margin: 0 0 1.25rem; }
+.md {
+  position: relative;
+  margin: 0 0 1.25rem;
+}
+.md > button.copy-md-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+  border: 1px solid var(--border);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, var(--bg) 92%, var(--fg) 8%);
+  color: var(--fg);
+  font: inherit;
+  font-size: 0.72rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.28rem 0.45rem;
+  cursor: pointer;
+  opacity: 0.85;
+}
+.md > button.copy-md-btn:hover,
+.md > button.copy-md-btn:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, var(--bg) 82%, var(--fg) 18%);
+  outline: none;
+}
+.md > button.copy-md-btn[data-state="success"] {
+  border-color: color-mix(in srgb, #16a34a 45%, var(--border));
+}
+.md > button.copy-md-btn[data-state="error"] {
+  border-color: color-mix(in srgb, #dc2626 45%, var(--border));
+}
 .md p { margin: 0 0 1.1rem; }
 .md ul, .md ol { margin: 0 0 1.1rem; padding-left: 1.4em; }
 .md li { margin-bottom: 0.25em; }
@@ -463,6 +495,36 @@ html.nav-open #backdrop {
 .md h1 > a, .md h2 > a, .md h3 > a, .md h4 > a, .md h5 > a, .md h6 > a {
   color: inherit;
   text-decoration: none;
+}
+.md h1, .md h2, .md h3, .md h4, .md h5, .md h6 {
+  scroll-margin-top: 0.9rem;
+}
+.md h1 > a.heading-link,
+.md h2 > a.heading-link,
+.md h3 > a.heading-link,
+.md h4 > a.heading-link,
+.md h5 > a.heading-link,
+.md h6 > a.heading-link {
+  margin-left: 0.45em;
+  color: var(--muted);
+  text-decoration: none;
+  font-weight: 500;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+.md h1:hover > a.heading-link,
+.md h2:hover > a.heading-link,
+.md h3:hover > a.heading-link,
+.md h4:hover > a.heading-link,
+.md h5:hover > a.heading-link,
+.md h6:hover > a.heading-link,
+.md h1 > a.heading-link:focus-visible,
+.md h2 > a.heading-link:focus-visible,
+.md h3 > a.heading-link:focus-visible,
+.md h4 > a.heading-link:focus-visible,
+.md h5 > a.heading-link:focus-visible,
+.md h6 > a.heading-link:focus-visible {
+  opacity: 1;
 }
 
 .md blockquote {
@@ -498,21 +560,20 @@ html.nav-open #backdrop {
 .md tt,
 .md kbd {
   font-family: var(--mono);
-  font-size: 92%;
-  font-weight: 440;
+  font-size: var(--font-size);
   font-feature-settings: "calt" 0;
   line-height: inherit;
 }
 
 .md code[class*=language-], pre[class*=language-] {
-  font-family: "Iosevka", "Fira Code", var(--mono);
-  border-radius: 0.2em;
-  padding: 0 0.25em;
-  text-shadow: none;
-  text-decoration: none;
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-  text-decoration-skip-ink: auto;
+  font-family: var(--mono);
+  border-radius: 0;
+  padding: 0;
+  text-shadow: none !important;
+  text-decoration: none !important;
+  text-decoration-thickness: 1px !important;
+  text-underline-offset: xxx-small !important;
+  text-decoration-skip-ink: auto !important;
 
   /* Wrap all */
   white-space: pre-wrap;
@@ -566,10 +627,43 @@ html.nav-open #backdrop {
 .md pre.prism {
   background: #272822;
   color: #f8f8f2;
+  position: relative;
+  padding-top: 2.2rem;
 }
 .md pre.prism > code {
   color: inherit;
   background: transparent;
+}
+.md pre.prism > button.copy-btn {
+  position: absolute;
+  top: 0.45rem;
+  right: 0.55rem;
+  z-index: 1;
+  border: 1px solid color-mix(in srgb, #fff 24%, transparent);
+  border-radius: 0.35rem;
+  background: color-mix(in srgb, #000 20%, transparent);
+  color: #f8f8f2;
+  font: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0.3rem 0.45rem;
+  cursor: pointer;
+  opacity: 0.9;
+}
+.md pre.prism > button.copy-btn:hover,
+.md pre.prism > button.copy-btn:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, #000 36%, transparent);
+  outline: none;
+}
+.md pre.prism > button.copy-btn[data-state="success"] {
+  border-color: color-mix(in srgb, #86efac 60%, transparent);
+  color: #bbf7d0;
+}
+.md pre.prism > button.copy-btn[data-state="error"] {
+  border-color: color-mix(in srgb, #fca5a5 60%, transparent);
+  color: #fecaca;
 }
 
 /* —— UI block —— */
@@ -669,6 +763,7 @@ html.nav-open #backdrop {
   border: 0;
   border-radius: 0;
   background: transparent;
+  border: 1px solid var(--border);
 }
 .mermaid svg {
   max-width: 100%;

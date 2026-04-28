@@ -43,6 +43,83 @@ let pathFilterQuery = "";
 let pathFilterCounts = null;
 
 /**
+ * @returns {{ contentPath: string | undefined, headingSlug: string | undefined }}
+ */
+function routeFromHash() {
+  const hash = (typeof location !== "undefined" ? location.hash : "") || "";
+  const raw = hash.replace(/^#+/, "").replace(/^\//, "").trim();
+  if (!raw) {
+    return { contentPath: undefined, headingSlug: undefined };
+  }
+
+  const normalized = raw.toLowerCase().endsWith(".md") ? raw.slice(0, -3) : raw;
+  if (hasNav) {
+    const known = new Set();
+    const addKnown = (p) => {
+      const h = contentPathToHash(p).replace(/^#/, "");
+      if (h) {
+        known.add(h);
+      }
+    };
+    const walk = (items) => {
+      for (const n of items) {
+        if (n.path) {
+          addKnown(n.path);
+        }
+        if (n.items) {
+          walk(n.items);
+        }
+      }
+    };
+    walk(nav.items || []);
+    if (nav.defaultPath) {
+      addKnown(nav.defaultPath);
+    }
+
+    const segs = normalized.split("/").filter(Boolean);
+    for (let i = segs.length; i >= 1; i--) {
+      const prefix = segs.slice(0, i).join("/");
+      if (!known.has(prefix)) {
+        continue;
+      }
+      const contentPath = getContentPathFromHash("#" + prefix);
+      if (!contentPath) {
+        continue;
+      }
+      const headingSlug = segs.slice(i).join("/") || undefined;
+      return { contentPath, headingSlug };
+    }
+  }
+
+  return { contentPath: getContentPathFromHash("#" + normalized), headingSlug: undefined };
+}
+
+/**
+ * @param {string} id
+ */
+function idSelector(id) {
+  if (typeof CSS !== "undefined" && typeof CSS.escape === "function") {
+    return "#" + CSS.escape(id);
+  }
+  return "#" + id.replace(/[^a-zA-Z0-9_-]/g, "\\$&");
+}
+
+/**
+ * @param {string | undefined} headingSlug
+ */
+function scrollToHeading(headingSlug) {
+  if (!el || !headingSlug) {
+    return;
+  }
+  const id = decodeURIComponent(headingSlug);
+  const t = el.querySelector(idSelector(id));
+  if (!t) {
+    return;
+  }
+  t.scrollIntoView({ block: "start", behavior: "auto" });
+}
+
+/**
  * @param {() => void} fn
  */
 function whenDocumentReady(fn) {
@@ -120,7 +197,7 @@ async function loadTree() {
 }
 
 function currentLogicalPath() {
-  const fromHash = getContentPathFromHash();
+  const fromHash = routeFromHash().contentPath;
   if (hasNav) {
     return coalescePath(nav.items, fromHash, nav.defaultPath, FALLBACK_MD);
   }
@@ -178,12 +255,13 @@ async function go(/** @type {string|undefined} */ explicitPath) {
   if (mobileNav) {
     mobileNav.closeIfMobile();
   }
+  const route = routeFromHash();
   const rel =
     explicitPath != null
       ? hasNav
         ? coalescePath(nav.items, explicitPath, nav.defaultPath, FALLBACK_MD)
         : (explicitPath.trim() || pickInitialPath([], nav.defaultPath, FALLBACK_MD))
-      : currentLogicalPath();
+      : (route.contentPath || currentLogicalPath());
 
   try {
     const u = contentUrl(rel, import.meta.url);
@@ -193,8 +271,9 @@ async function go(/** @type {string|undefined} */ explicitPath) {
     }
     const doc = await compile(await res.text(), { sourcePath: rel });
     el.replaceChildren();
-    render(el, doc);
+    render(el, doc, { contentPath: rel });
     await runLazyEnrichers(el);
+    scrollToHeading(route.headingSlug);
   } catch (e) {
     const p = document.createElement("p");
     p.className = "error";

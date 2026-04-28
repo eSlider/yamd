@@ -98,6 +98,69 @@ function queryCodeBlocks(root) {
 }
 
 /**
+ * @param {string} text
+ * @returns {Promise<boolean>}
+ */
+async function copyText(text) {
+  if (!text) {
+    return false;
+  }
+  if (window.isSecureContext && navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+    try {
+      await navigator.clipboard.writeText(text);
+      return true;
+    } catch {
+    }
+  }
+  const ta = document.createElement("textarea");
+  ta.value = text;
+  ta.setAttribute("readonly", "");
+  ta.style.position = "fixed";
+  ta.style.opacity = "0";
+  ta.style.pointerEvents = "none";
+  document.body.appendChild(ta);
+  ta.focus();
+  ta.select();
+  let ok = false;
+  try {
+    ok = document.execCommand("copy");
+  } catch {
+    ok = false;
+  } finally {
+    document.body.removeChild(ta);
+  }
+  return ok;
+}
+
+/**
+ * @param {HTMLElement} pre
+ * @param {HTMLElement} code
+ */
+function attachCopyButton(pre, code) {
+  if (pre.querySelector(":scope > button.copy-btn")) {
+    return;
+  }
+  const btn = document.createElement("button");
+  btn.type = "button";
+  btn.className = "copy-btn";
+  btn.textContent = "Copy";
+  btn.setAttribute("aria-label", "Copy code block");
+  btn.addEventListener("click", async () => {
+    const original = btn.textContent || "Copy";
+    btn.disabled = true;
+    const ok = await copyText(code.textContent || "");
+    btn.textContent = ok ? "Copied" : "Error";
+    btn.dataset.state = ok ? "success" : "error";
+    window.setTimeout(() => {
+      btn.textContent = original;
+      delete btn.dataset.state;
+      btn.disabled = false;
+    }, ok ? 1200 : 1600);
+  });
+  pre.appendChild(btn);
+}
+
+/**
  * @param {HTMLElement} root
  */
 export async function runPrismInRoot(root) {
@@ -155,6 +218,7 @@ export async function runPrismInRoot(root) {
     const pre = code.parentElement;
     if (pre && pre.localName.toLowerCase() === "pre") {
       pre.classList.add("prism");
+      attachCopyButton(pre, code);
     }
   }
 }

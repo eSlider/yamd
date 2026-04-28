@@ -29,7 +29,7 @@ export async function compile(raw, options) {
     if (sourcePath) {
       html = rewriteRelativeMarkdownLinksInHtml(html, String(sourcePath));
     }
-    parts.push({ type: "md", html });
+    parts.push({ type: "md", html, source: s.md });
   }
   return { meta, parts };
 }
