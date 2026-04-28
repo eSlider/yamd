@@ -19,15 +19,60 @@ function loadMermaid() {
   if (!mermaidReady) {
     mermaidReady = (async () => {
       const mod = await import(/* webpackIgnore: true */ MERMAID_CDN);
-      const mermaid = mod.default;
-      mermaid.initialize({
-        startOnLoad: false,
-        securityLevel: "loose",
-      });
-      return mermaid;
+      return mod.default;
     })();
   }
   return mermaidReady;
+}
+
+function isDarkTheme() {
+  const explicit = document.documentElement.getAttribute("data-theme");
+  if (explicit === "dark") {
+    return true;
+  }
+  if (explicit === "light") {
+    return false;
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches;
+}
+
+function getThemeVariables(darkMode) {
+  if (darkMode) {
+    return {
+      darkMode: true,
+      background: "#111111",
+      fontFamily: "Inter var, Inter, system-ui, sans-serif",
+      fontSize: "16px",
+      primaryColor: "#333333",
+      primaryTextColor: "#fafafa",
+      primaryBorderColor: "#8e8e8e",
+      secondaryColor: "#222222",
+      tertiaryColor: "#2a2a2a",
+      lineColor: "#a8a8a8",
+      textColor: "#fafafa",
+      mainBkg: "#2b2b2b",
+      noteBkgColor: "#2f2f2f",
+      noteTextColor: "#fafafa",
+      noteBorderColor: "#7f7f7f",
+    };
+  }
+  return {
+    darkMode: false,
+    background: "#ffffff",
+    fontFamily: "Inter var, Inter, system-ui, sans-serif",
+    fontSize: "16px",
+    primaryColor: "#f2f2f2",
+    primaryTextColor: "#000000",
+    primaryBorderColor: "#7a7a7a",
+    secondaryColor: "#f7f7f7",
+    tertiaryColor: "#efefef",
+    lineColor: "#666666",
+    textColor: "#000000",
+    mainBkg: "#f3f3f3",
+    noteBkgColor: "#fff8cf",
+    noteTextColor: "#000000",
+    noteBorderColor: "#8a8a8a",
+  };
 }
 
 /**
@@ -39,6 +84,13 @@ export async function runMermaidInRoot(root) {
     return;
   }
   const mermaid = await loadMermaid();
+  const darkMode = isDarkTheme();
+  mermaid.initialize({
+    startOnLoad: false,
+    securityLevel: "loose",
+    theme: "base",
+    themeVariables: getThemeVariables(darkMode),
+  });
   for (const code of codes) {
     const pre = code.parentElement;
     if (!pre || pre.localName.toLowerCase() !== "pre") {
