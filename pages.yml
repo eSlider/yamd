@@ -1,27 +1,36 @@
 # Landing when no hash: this key, or first `path` in the tree.
-# Deep links: path under `content/`, e.g. #examples/cookbook → content/examples/cookbook.md
-default_path: content/docs/index.md
+# Deep links: path under `content/`, e.g. #examples/cookbook -> content/examples/cookbook.md
+default_path: content/start.md
 
 nav:
-  - title: yamd
-    path: content/docs/index.md
+
+  - title: Start here
+    path: content/start.md
     items:
-      - title: Philosophy
-        path: content/docs/philosophy.md
-      - title: Features
-        path: content/docs/features.md
-      - title: Security
-        path: content/docs/security.md
-      - title: Architecture
-        path: content/docs/architecture.md
-      - title: "Site map & routing"
-        path: content/docs/site-map.md
+      - title: Product overview
+        path: content/docs/index.md
       - title: Get started
         path: content/docs/get-started.md
+      - title: Information architecture
+        path: content/docs/site-map.md
 
-  - title: Examples
+  - title: Authoring guide
     items:
-      - title: "Live demo"
+      - title: Features and authoring model
+        path: content/docs/features.md
+      - title: Philosophy and constraints
+        path: content/docs/philosophy.md
+
+  - title: Technical reference
+    items:
+      - title: Architecture
+        path: content/docs/architecture.md
+      - title: Security model
+        path: content/docs/security.md
+
+  - title: Examples library
+    items:
+      - title: Live demo
         path: content/example.md
       - title: Forms
         path: content/examples/forms.md
@@ -31,9 +40,10 @@ nav:
         path: content/examples/patterns.md
       - title: Research
         path: content/examples/research.md
-  - title: Reference
+
+  - title: Product notes
     items:
       - title: Specs
         path: content/specs.md
-      - title: Idea
+      - title: Idea and contract
         path: content/idea.md

@@ -1,22 +1,66 @@
 ---
-title: "Features"
-description: "Zero backend, zero build, declarative-first, author vs engine."
+title: "Features and authoring model"
+description: "What yamd does, what it refuses to do, and the contract you can rely on."
 ---
 
-# Features
+# Features and authoring model
 
-[← yamd manual](#docs/index)
+[← Back to Start](#start)
 
-These labels describe **design intent**, not marketing absolutes.
+The headline is short: **you write Markdown, you list it in YAML, the browser renders it.** Everything below is the small print that makes that promise true.
 
-| Label | Meaning in this project |
-|-------|-------------------------|
-| **Zero backend** | The **published** site is **static files** only. No app server, API, or database in the delivery path. The browser loads `index.html`, `src/`, `content/`, `pages.yml` from any static host. |
-| **Zero build** | **No** bundler, no `npm run build` for the app. The browser runs **ES modules** with an **`importmap`**. `npm run dev` is a tiny static server, not a compile pipeline. |
-| **Zero [author] code** | **You** (author) do not add application code to ship a page: only **Markdown**, **YAML** (frontmatter + ` ```ui` blocks), and **`pages.yml`**. The **engine** in `src/*.js` is shared and prewritten. |
-| **Declarative-first** | The **source of truth** is **data**: UI in fenced blocks; the **site tree** in `pages.yml`; forms use `type`, `items`, `action` / `method`—**declare** what you need, the runtime maps to the DOM. |
-| **Filter (nav)** | With a nav from `pages.yml`, a **filter** field at the top of the sidebar **narrows the same nav tree** (no separate result list). The text index is built when the field is **focused** (refetched on each focus); matching uses **nav titles**, **frontmatter `title`**, and **body** text. Multi-word queries require **all** words to match. Press **`/`** to focus the field when not typing elsewhere. |
+## The four zeros
 
-**Not claimed:** that the repo contains *no* JavaScript (it does), or that **untrusted** markdown is safe without a sanitizer—see [Security](#docs/security).
+| Promise | What it actually means |
+| --- | --- |
+| **Zero backend** | The shipped site is static files. No app server, no API, no database in the delivery path. Any static host works. |
+| **Zero build** | No bundler. No `npm run build`. The browser runs ES modules through an `importmap`. `npm run dev` is a tiny static server, nothing else. |
+| **Zero author code** | To ship a page you write **Markdown**, **YAML** frontmatter, and edit **`pages.yml`**. The engine in `src/*.js` is shared and prewritten. |
+| **Zero migration** | If you delete yamd tomorrow, your `content/` is still readable Markdown. Your investment survives the tool. |
 
-**Related:** [Philosophy](#docs/philosophy) · [Architecture](#docs/architecture)
+These are design intent, not marketing absolutes. The repo contains JavaScript. Untrusted Markdown is not safe by default. We are explicit about that in [Security model](#docs/security).
+
+## The authoring contract
+
+You touch three things, in this order of frequency:
+
+1. **Markdown body** under `content/` — your prose, tables, code, diagrams.
+2. **YAML frontmatter** at the top of each `.md` — `title`, `description`, optional metadata.
+3. **`pages.yml`** at the project root — the navigation tree and `default_path`.
+
+That is the whole authoring surface. There is no fourth thing. If you find yourself reaching for a fourth thing, stop and check [Architecture](#docs/architecture) — you may be solving a problem the engine already solves.
+
+## Declarative-first, by default
+
+The source of truth is **data**, not code:
+
+- UI blocks are declared in fenced YAML.
+- The site tree is declared in `pages.yml`.
+- Forms describe `type`, `items`, `action`, `method` — the runtime maps that to the DOM.
+
+**Why it matters:** declarative content is greppable, diffable, reviewable, and survives the next framework cycle. Imperative authoring does not.
+
+## The sidebar filter
+
+When `pages.yml` defines a non-empty nav, a filter field appears at the top of the sidebar.
+
+- **It narrows the same tree.** No second list of results to scan.
+- **Index builds on focus.** Nothing downloaded until you actually use it.
+- **Multi-word queries are AND-ed.** Every word must match.
+- **Press `/` to focus, `Esc` to clear.** Keyboard-first, always.
+
+The index covers nav titles, frontmatter `title`, and the plain-text body of each page. Code blocks are stripped from the body before indexing.
+
+## What yamd is not
+
+- It is not a CMS. There is no editor, no roles, no approval flow.
+- It is not an SSR framework. SEO-critical marketing pages should use one.
+- It is not a plugin platform. Extensions are forks, not loadable modules.
+
+We pick this trade on purpose. **Boring is the feature.**
+
+## Related
+
+- [Philosophy and constraints](#docs/philosophy) — why we drew the lines here
+- [Architecture](#docs/architecture) — how the contract is wired in code
+- [Security model](#docs/security) — the rules before you publish untrusted input

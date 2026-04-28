@@ -1,27 +1,54 @@
 ---
-title: "yamd — home"
-description: "Yet another markdown: humanized in-app manual (content/ + pages.yml)."
+title: "Product overview"
+description: "yamd in 30 seconds: what it is, why it exists, and who it is for."
 ---
 
-# yamd documentation
+# yamd in 30 seconds
 
-**yamd** (*yet another markdown* — YAML + Markdown) is a **zero-backend documentation engine** for your `.md` files. This in-app **manual** is just Markdown in [`content/`](https://github.com/eSlider/yamd/tree/main/content) and the [nav tree in `pages.yml`](https://github.com/eSlider/yamd/blob/main/pages.yml); **the app is the documentation.**
+A folder of `.md` files. One `pages.yml`. That is the whole stack.
 
-## Read next
+No build step. No bundler. No backend. No framework lock-in. Open the folder in any static host and you are done.
 
-| Topic | What you get |
-|-------|----------------|
-| [Philosophy](#docs/philosophy) | Why a **string → compile → render** contract, and what we avoid |
-| [Features](#docs/features) | **Zero backend** / **build** / **author code**, **declarative-first**, and **nav filter** (search narrows the tree) |
-| [Architecture](#docs/architecture) | `compile` / `render` flow, `main.js` / `nav-search.js` / `site-nav.js` |
-| [Site map & routing](#docs/site-map) | `pages.yml`, deep links (e.g. `#examples/cookbook`), `default_path` |
-| [Get started](#docs/get-started) | Local run, static servers, **filter nav**, **Docker (GHCR)**, deploy |
-| [Security](#docs/security) | Trust, `innerHTML`, untrusted markdown |
+## The pitch
 
-## Examples (outside this section)
+**Most docs platforms ask you to migrate.** yamd asks you to keep writing Markdown.
 
-- [Live demo (forms)](#example) — ` ```ui` blocks in one file
-- [Forms](#examples/forms) · [Cookbook](#examples/cookbook) · [Form patterns](#examples/patterns) · [Research](#examples/research)
-- [Specs](#specs) · [Idea (contract)](#idea)
+- Your content is just files. Grep them. Diff them. Move them.
+- Your navigation is one YAML file. A junior dev can edit it.
+- Your hosting is whatever serves static assets.
 
-The [repository README](https://github.com/eSlider/yamd#readme) is the short on-ramp: **what yamd is**, **clone and run in one minute**, and links into this manual. Deeper how-it-works and ops detail live **here** so you can link between pages like a normal static manual.
+If you delete yamd tomorrow, your docs still exist as readable Markdown. **That is the entire promise.**
+
+## What you get out of the box
+
+- Multi-page docs site rendered in the browser.
+- Deterministic deep links and routing from `pages.yml`.
+- Sidebar filter that narrows the tree as you type.
+- Optional Mermaid diagrams and Prism syntax highlighting, loaded only when needed.
+- Static deploy to GitHub Pages, Netlify, S3, or your own nginx in minutes.
+
+## Who this is for
+
+- **Teams drowning in doc framework migrations.** Stop. Just write Markdown.
+- **Projects that already speak Markdown.** Your README is already 80% of a docs site.
+- **Maintainers who want boring infrastructure.** Static files do not page you at 3 AM.
+
+## Who this is not for
+
+- You need WYSIWYG editing, comments, and approval workflows. Use a CMS.
+- You need server-side rendering for SEO-critical marketing pages. Use a real SSR framework.
+- You need plugins, themes marketplaces, and a brand around your docs tool. Use the obvious ones.
+
+We are honest about the trade. Boring is the feature.
+
+## How this manual is organized
+
+- **[Start here](#start)** is the entry path and reading flow.
+- **[Get started](#docs/get-started)** runs the site locally and ships it.
+- **[Information architecture](#docs/site-map)** maps URLs to files.
+- **[Features and authoring model](#docs/features)** is the day-to-day writing reference.
+- **[Architecture](#docs/architecture)** and **[Security model](#docs/security)** are the internals.
+
+## Next step
+
+You have read enough theory. **[Run it locally](#docs/get-started)** — it takes longer to read about than to do.

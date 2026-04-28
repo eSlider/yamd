@@ -1,32 +1,48 @@
 ---
-title: "Philosophy"
-description: "Design goals: content as contract, view as engine."
+title: "Philosophy and constraints"
+description: "Why yamd draws a hard line between content and engine, and what we refused to build."
 ---
 
-# Philosophy
+# Philosophy and constraints
 
-[← yamd manual](#docs/index)
+[← Back to Start](#start)
 
-## The question
+A documentation tool earns trust by what it refuses to do.
 
-Can **content** be a portable **contract** (a string) and the **view** a replaceable **engine**—without a full framework stack for every small doc+form experiment?
+## The question we started from
 
-## What we pushed back on
+Can **content** be a portable contract — a plain string — and the **view** a replaceable engine, **without** a full framework stack for every small docs experiment?
 
-| Direction | Why it was too heavy for this sketch |
-|-----------|--------------------------------------|
-| TypeScript, `.mjs` sprawl, extra adapters | One obvious **plain JS** ESM pipeline |
-| React/MDX-style **bundles** for every try | **No build** in the repo: `importmap` + `fetch` |
-| A second renderer (e.g. UI kit via `import()`) | **One DOM path**; fewer MIME/SPA/CDN issues |
-| Many ill-defined “services” in the app | **Two steps:** `compile(raw)` and `render(container, doc)` (+ UI block render) |
+If yes, the rest of the design follows on its own.
 
-## The rule
+## What we refused to build
 
-**Content delivery** (file, `fetch`, CMS) only **provides a string**. Everything else is **compile** → `{ meta, parts }` and **render** → DOM. That is the **declaration** the engine implements.
+| Direction | Why we said no |
+| --- | --- |
+| TypeScript pipeline, multiple module formats, adapter layers | One obvious **plain JS** ESM pipeline beats five flexible ones |
+| React/MDX-style **bundles** for every page | **No build** in the repo: `importmap` + `fetch`, period |
+| A second renderer (UI kit via dynamic import, etc.) | One DOM path. Fewer MIME, SPA, and CDN edge cases |
+| A bag of vaguely scoped "services" inside the app | **Two steps:** `compile(raw)` and `render(container, doc)`, plus UI block render |
 
-**Authors** work in **Markdown + YAML** (frontmatter, ` ```ui` blocks, `pages.yml`). They do not ship their own app bundle to add a form or a nav line—see [Features](#docs/features).
+Every "no" above is a feature you do not have to learn, debug, or migrate off later.
+
+## The contract
+
+Content delivery (a file, a `fetch`, a CMS, a paste) only ever **provides a string**. Everything after that is:
+
+- `compile(raw)` → `{ meta, parts }`
+- `render(container, doc)` → DOM
+
+That is the entire declaration the engine implements. Authors work in **Markdown + YAML** — frontmatter, fenced ` ```ui` blocks, and `pages.yml` — and never ship their own application bundle to add a form or a nav line.
+
+## What this buys you
+
+- **Substitutability.** Swap the renderer. Swap the host. Swap the content source. The contract holds.
+- **Forensics.** When something is wrong, you only have two functions to suspect.
+- **Longevity.** The Markdown stays readable in any text editor for the next twenty years.
 
 ## Related
 
 - [Architecture](#docs/architecture) — how the contract is wired in code
-- [Idea (short note)](#idea) in the old “reference” pages
+- [Features and authoring model](#docs/features) — what falls out of the contract for authors
+- [Idea and contract](#idea) — the original short note

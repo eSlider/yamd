@@ -1,8 +1,10 @@
 # yamd
 
-**Yet another markdown** — a small, **in-browser** documentation site for projects that already speak **Markdown** and **YAML**.
+**Markdown in. Static site out. Zero backend. Zero build step.**
 
-You write and organize pages under `content/`, list them in `pages.yml`, and host the result as static files. No app server required for readers.
+Most doc tools want you to learn them. **yamd** wants you to forget it exists.
+
+A folder of `.md` files. One `pages.yml`. That is the whole stack. If you delete yamd tomorrow, your `content/` is still readable Markdown — your investment survives the tool.
 
 <p>
   <a href="https://github.com/eSlider/yamd/blob/main/LICENSE"><img src="https://img.shields.io/badge/License-MIT-blue.svg" alt="License: MIT" /></a>
@@ -18,10 +20,10 @@ You write and organize pages under `content/`, list them in `pages.yml`, and hos
 
 ## Why this exists
 
-- **You stay in content**, not a framework. Pages are **GitHub-Flavored Markdown**. The shell loads once; you refresh when files change.
-- **Ships like any static site** — drop the folder on GitHub Pages, Netlify, S3, or your own host. The engine in `src/*.js` runs in the reader’s browser; there is no server-side render step for the app.
-- **The manual lives beside your docs** — philosophy, features, how routing works, local run, deploy, and security expectations are all in [`content/docs/`](content/docs/) and linked from the left nav. Start at [`content/docs/index.md`](content/docs/index.md).
-- **Sidebar filter** — With `pages.yml` nav, a field at the top of the tree **focus loads** a text index of listed pages (nav titles, frontmatter `title`, and body; refetched on each focus). As you type, the **nav tree is narrowed** to matches—no separate result list—and **matching words in labels are highlighted** (`<mark>`). See [Get started](https://eSlider.github.io/yamd/#docs/get-started) and [Features](https://eSlider.github.io/yamd/#docs/features).
+- **You stay in content, not a framework.** Pages are GitHub-Flavored Markdown. The shell loads once; you refresh when files change.
+- **Ships like any static site.** Drop the folder on GitHub Pages, Netlify, S3, or your own host. The engine in `src/*.js` runs in the reader’s browser. No server-side render.
+- **The manual is the product.** Philosophy, features, routing, local run, deploy, and security all live in [`content/`](content/) and link from the left nav. Start at [`content/start.md`](content/start.md).
+- **Sidebar filter that respects you.** With a `pages.yml` nav, the filter narrows the same tree as you type — no second list of results, no surprise downloads. The text index loads only when you focus the field. Press `/` to focus, `Esc` to clear.
 
 ## Try it in a minute
 
@@ -35,7 +37,7 @@ npm run dev
 
 Open `http://127.0.0.1:3456/` (or the port printed in the terminal). Edit files under `content/`, save, and refresh. Change the sidebar with [`pages.yml`](pages.yml). After the first **focus** on the filter field, you can type to filter the tree and see highlights; press **`/`** to focus the field (when not typing in another input).
 
-**More options** (other tools, ports, and GitHub Pages): [Get started](https://eSlider.github.io/yamd/#docs/get-started) in the in-app manual.
+**More options** (other tools, ports, and GitHub Pages): [Get started](https://eSlider.github.io/yamd/#docs/get-started) in the in-app manual. Or jump straight to the [Start here](https://eSlider.github.io/yamd/#start) page for the full reading map.
 
 ### Run from the published container (GHCR)
 

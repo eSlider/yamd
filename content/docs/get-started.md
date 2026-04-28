@@ -1,75 +1,86 @@
 ---
 title: "Get started"
-description: "Clone, search, local servers, Docker (GHCR), deploy, edit content and nav."
+description: "From clone to running site in five minutes."
 ---
 
 # Get started
 
-[← yamd manual](#docs/index)
+[← Back to Start](#start)
 
-1. **Clone and run a static server** (ES modules and `fetch` will not work from `file://` the way you need):
-   ```bash
-   git clone https://github.com/eSlider/yamd.git
-   cd yamd
-   npm run dev
-   ```
-2. **Open** `http://127.0.0.1:3456/` (or the port in the log). The default view is set by `default_path` in `pages.yml` (here: [yamd manual](#docs/index)) unless the URL has a hash.
-3. **Change content** under [`content/`](https://github.com/eSlider/yamd/tree/main/content); refresh. Deep links: `#docs/philosophy`, `#example`, `#examples/cookbook`, etc. (no `.md` in the bar).
-4. **Change the nav** by editing [`pages.yml`](https://github.com/eSlider/yamd/blob/main/pages.yml) (paths are app-root-relative, e.g. `content/docs/index.md`).
+You will be looking at your own running site before this page finishes loading.
 
-`importmap` in `index.html` loads [marked](https://github.com/markedjs/marked) and [yaml](https://github.com/eemeli/yaml) from a CDN; no `npm install` of those is required for the **browser** path.
+## The five-minute path
 
-## Search in the nav
+```bash
+git clone https://github.com/eSlider/yamd.git
+cd yamd
+npm run dev
+```
 
-When `pages.yml` defines a non-empty nav, a **filter** field appears at the top of the left sidebar (and in the mobile drawer). Typing in it **hides nav links** that do not match—there is **no second list** of results; you pick pages from the filtered tree as usual. **Nothing is downloaded until you focus** the field; each time you focus it, the text index is **rebuilt** from every `path` in the tree (plus `default_path` if not already listed).
+Open `http://127.0.0.1:3456/` in any browser. **Done.**
 
-- **What is indexed:** nav item **titles** from `pages.yml`, `title` in each page’s **YAML frontmatter** (if present), and a plain-text form of the **Markdown body** (code blocks removed). Until the index is ready, the filter can still match **nav titles** only.
-- **Query:** Multiple words are **and**-ed: every word must appear in the page’s combined text for that link to stay visible (ancestor section rows stay if any child matches).
-- **Keyboard:** With focus not in another control, press **`/`** to focus the field. **`Escape`** clears the filter and restores the full tree.
+That is the whole setup. No `npm install` of UI libraries. No build step. The browser pulls [marked](https://github.com/markedjs/marked) and [yaml](https://github.com/eemeli/yaml) from a CDN through the `importmap` in `index.html`.
 
-Details: [Features — Search (nav)](#docs/features) · [Architecture](#docs/architecture) (`nav-search.js`).
+## What just happened
 
-## Use a real HTTP server (not `file://`)
+1. The page loaded `index.html` and one ES module entry point.
+2. The engine fetched `pages.yml` and the page named in `default_path`.
+3. Markdown was compiled to HTML and rendered into the article.
 
-Opening `index.html` directly from disk will **not** work the way yamd needs: the app uses **ES modules**, `import()`, and `fetch` for `content/*` and `pages.yml`, so the project folder must be served as an **HTTP document root**.
+There is nothing else. If something breaks, only those three steps can be wrong.
 
-## Other ways to run locally
+## Edit something. Confirm the loop works.
 
-Replace `8080` with any free port when the tool accepts a port, then open the matching URL (for example `http://127.0.0.1:8080/`). This repo’s `npm run dev` uses **3456** by default (see [dev-server.js](https://github.com/eSlider/yamd/blob/main/dev-server.js)). **Deno**’s `file-server` often defaults to **8000** unless you pass a flag.
+1. Open any file under `content/` and change a line.
+2. Save.
+3. Refresh the browser.
 
-| Tool | One command (static file server) |
-|------|----------------------------------|
-| **This repo (Node)** | `npm run dev` — `http://127.0.0.1:3456/` |
-| **Node (npx)** | `npx --yes serve@latest -l 8080` or `npx --yes http-server@latest -p 8080 -c-1` |
+If your change shows up, your authoring loop is working. That loop is the whole product.
+
+Internal links use a hash and the path under `content/` — no `content/` segment, no `.md` extension:
+
+| In the address bar | Loaded file |
+| --- | --- |
+| `#docs/get-started` | `content/docs/get-started.md` |
+| `#examples/cookbook` | `content/examples/cookbook.md` |
+| `#example` | `content/example.md` |
+
+## The sidebar filter (the one feature worth knowing on day one)
+
+- Press **`/`** to focus the filter field.
+- Type to narrow the nav tree in place.
+- Press **`Esc`** to clear and restore.
+
+The index loads only when you focus the field. You pay nothing until you use it.
+
+## You do need a real HTTP server
+
+Opening `index.html` from disk through `file://` will not work. The engine uses ES modules and `fetch`, which require an HTTP origin. Pick any of these:
+
+| Tool | One-liner |
+| --- | --- |
+| **This repo (Node)** | `npm run dev` (serves on `:3456`) |
+| **Node (npx)** | `npx --yes serve@latest -l 8080` |
 | **Python 3** | `python3 -m http.server 8080` |
-| **Ruby** | `ruby -run -ehttpd . -p 8080` |
-| **PHP** (5.4+) | `php -S 127.0.0.1:8080 -t .` (run from the yamd project folder) |
-| **PHP (Docker)** | `docker run --rm -p 8080:8080 -v "$PWD":/app -w /app php:8.3-cli php -S 0.0.0.0:8080 -t /app` |
+| **PHP 5.4+** | `php -S 127.0.0.1:8080 -t .` |
 | **Caddy** | `caddy file-server --root . --listen :8080` |
-| **Deno** | `deno run --allow-net --allow-read jsr:@std/http/file-server` (port often 8000) |
 | **Bun** | `bunx --bun serve@latest -p 8080` |
 | **nginx (Docker)** | `docker run --rm -p 8080:80 -v "$PWD":/usr/share/nginx/html:ro nginx:alpine` |
 | **BusyBox** | `busybox httpd -f -p 8080 -h .` |
-| **Go** | No single stdlib *command*; use one of the rows above or a tiny `FileServer` program, or a static binary like [miniserve](https://github.com/svenstaro/miniserve), [darkhttpd](https://github.com/ryanmjacobs/darkhttpd), [static-web-server](https://github.com/static-web-server/static-web-server). |
 
-*Security:* these are **local dev** patterns. Do not expose an unhardened static server to the public internet.
+These are local dev patterns. **Do not** expose an unhardened static server to the public internet.
 
-## Docker (GHCR / Bun)
+## Run the published image (no clone required)
 
-The app image is **not** on Docker Hub. It is built on **GitHub Actions** and published to the **GitHub Container Registry (GHCR)** for this repository.
+The image is published to the **GitHub Container Registry** (not Docker Hub) by [`docker-publish.yml`](https://github.com/eSlider/yamd/blob/main/.github/workflows/docker-publish.yml) on every push to `main`.
 
-| | |
-|--|--|
-| **Build workflow** | [`.github/workflows/docker-publish.yml`](https://github.com/eSlider/yamd/blob/main/.github/workflows/docker-publish.yml) — runs on push to `main`, on version tags `v*`, and [manually](https://github.com/eSlider/yamd/actions/workflows/docker-publish.yml) |
-| **Dockerfile** | [`Dockerfile`](https://github.com/eSlider/yamd/blob/main/Dockerfile) — copies `index.html`, `src/`, `content/`, `pages.yml`, and runs [dev-server.js](https://github.com/eSlider/yamd/blob/main/dev-server.js) with **Bun** |
-| **Upstream image (this repo)** | `ghcr.io/eslider/yamd:latest` — [View package on GitHub](https://github.com/eSlider/yamd/pkgs/container/yamd) (tags like `latest`, `sha-…` appear after a successful run) |
-| **Your fork** | `ghcr.io/<github-username>/yamd:…` under **Packages** on your repo, once Actions has pushed at least once |
+| What | Value |
+| --- | --- |
+| **Registry** | `ghcr.io` |
+| **Upstream image** | `ghcr.io/eslider/yamd:latest` |
+| **Your fork** | `ghcr.io/<your-username>/yamd:latest` (after your Actions run pushes once) |
 
-`docker pull` for public packages is usually anonymous. If a package is **private** for your org, use a [PAT with `read:packages`](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry) and `docker login ghcr.io`.
-
-### Run with a bind mount (typical: edit your clone’s content)
-
-The container serves port **3456** inside; map a host port (here **8080**):
+Run it against your local `content/` and `pages.yml`:
 
 ```bash
 docker run --rm \
@@ -79,24 +90,27 @@ docker run --rm \
   ghcr.io/eslider/yamd:latest
 ```
 
-Run it from a directory that has `./content` and `./pages.yml` (for example the repo root after `git clone`). Open **http://127.0.0.1:8080/**.
+Open `http://127.0.0.1:8080/`. Drop the `-v` flags to preview the bundle that was baked into the image.
 
-### Run without mounts
+**Tuning:**
 
-Omit the `-v` flags to use the `content/` and `pages.yml` that were **copied into the image** at build time (useful to preview the default bundle).
+- `PORT` inside the container defaults to `3456`. With `-e PORT=3000`, map `-p 8080:3000`.
+- `HOST=0.0.0.0` is set so the publish works; the log may still print a loopback URL for copy-paste.
 
-### Tuning
+## Deploy
 
-- **Inside port:** the server reads `PORT` (default `3456`). With `-e PORT=3000`, map the host: `-p 8080:3000`.
-- **Host binding:** the image sets `HOST=0.0.0.0` so the port publish works. The process log may still show a loopback URL for copy-paste.
-- **Registry docs:** [Working with the Container registry](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry).
+The shipped site is static files: `index.html`, `src/`, `content/`, `pages.yml`. That means **any** static host: GitHub Pages, Netlify, Cloudflare Pages, S3, your own nginx.
 
-## Deploy: GitHub Pages (and static hosts in general)
+For GitHub Pages specifically:
 
-- The shipped site is **static files**: `index.html`, `src/`, `content/`, `pages.yml` (see [.github/workflows/deploy-gh-pages.yml](https://github.com/eSlider/yamd/blob/main/.github/workflows/deploy-gh-pages.yml)). Push to `main` to publish via Actions.
-- In the repo: **Settings → Pages → Source: GitHub Actions** so that workflow is used (not a duplicate branch deploy).
-- After renaming the repository, the site URL is `https://<user>.github.io/<repo>/` (e.g. [eSlider.github.io/yamd](https://eSlider.github.io/yamd/)).
-- **First visit** after a deploy can briefly show 404; refresh. Custom domains: [GitHub Pages docs](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site).
-- **Deep links** use the hash as the path *under* `content/` (no `content` segment), e.g. `#examples/cookbook` → `content/examples/cookbook.md` — see [Site map & routing](#docs/site-map).
+- Enable **Settings → Pages → Source: GitHub Actions** so [`deploy-gh-pages.yml`](https://github.com/eSlider/yamd/blob/main/.github/workflows/deploy-gh-pages.yml) is the one that publishes.
+- Push to `main`. Your site URL is `https://<user>.github.io/<repo>/`.
+- First visit after a deploy may briefly 404 — refresh once.
+- Deep links use the hash, e.g. `#examples/cookbook` → `content/examples/cookbook.md`. Subpath hosting works without rewrites.
 
-**Read next:** [Site map & routing](#docs/site-map) · [Security](#docs/security) · [Live demo](#example) · [Architecture](#docs/architecture)
+## Where to go next
+
+- **You want to write a page.** Open [Features and authoring model](#docs/features).
+- **You want to understand routing.** Open [Information architecture](#docs/site-map).
+- **You want to look under the hood.** Open [Architecture](#docs/architecture).
+- **You are about to publish public content.** Open [Security model](#docs/security) first.

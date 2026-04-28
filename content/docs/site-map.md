@@ -1,32 +1,48 @@
 ---
-title: "Site map & routing"
-description: "pages.yml, #... deep links, default_path."
+title: "Information architecture"
+description: "How URLs, pages.yml, and files on disk map to each other."
 ---
 
-# Site map & routing
+# Information architecture
 
-[← yamd manual](#docs/index)
+[← Back to Start](#start)
 
-## `pages.yml` (next to `index.html`)
+One file owns navigation. One simple rule maps URLs to disk. That is the whole routing model.
 
-- Describes the **left nav** (titles, optional `path` to a `.md` under `content/`, nested `items`).
-- The app **fetches** `../pages.yml` (relative to the app root). If the fetch fails or the list is empty, the sidebar hides and the app can still open a file via hash.
+## `pages.yml` owns the sidebar
 
-**Root shapes** the parser accepts: a **top-level array**, or an object with **`nav` / `items` / `pages`** and optional `default_path` (see [site-nav.js `parsePagesYmlText`](https://github.com/eSlider/yamd/blob/main/src/site-nav.js)).
+`pages.yml` lives next to `index.html` and describes the left nav: titles, optional `path` to a `.md` under `content/`, and nested `items`. The app fetches it relative to the app root. If the fetch fails or the list is empty, the sidebar hides and the app still opens files via the URL hash.
 
-## Deep links: path under `content/` (no `content` in the bar, no `.md`)
+Accepted root shapes: a top-level array, or an object with `nav` / `items` / `pages`, plus an optional `default_path`. See [`site-nav.js` parsePagesYmlText](https://github.com/eSlider/yamd/blob/main/src/site-nav.js) for the full grammar.
 
-| In the address bar | Loaded file (relative to app root) |
-|--------------------|------------------------------------|
+## URL-to-file mapping (one rule, no exceptions)
+
+The hash is the path **under** `content/`. No `content/` segment. No `.md` extension.
+
+| In the address bar | Loaded file |
+| --- | --- |
+| `#start` | `content/start.md` |
 | `#docs/philosophy` | `content/docs/philosophy.md` |
 | `#example` | `content/example.md` |
 | `#examples/cookbook` | `content/examples/cookbook.md` |
 
-- Internal Markdown links: `[text](#examples/cookbook)` (same as the nav; hash-only, works on [GitHub Pages under a subpath](https://eSlider.github.io/yamd/) without domain-root `/?…`).
-- **Legacy** `?path=content%2F…` is **one-off** rewritten to the hash (see `main.js`).
+Internal Markdown links use the same form: `[Cookbook](#examples/cookbook)`. Hash-only links survive subpath hosting (for example GitHub Pages under `/<repo>/`) without query rewrites.
+
+Legacy `?path=content%2F…` links are rewritten once on load to the short hash form, so old bookmarks keep working.
 
 ## `default_path`
 
-In `pages.yml`, `default_path` is the file used when the URL has **no hash** (or unknown hash, then the tree is consulted). This site’s default is [yamd manual](#docs/index) (`content/docs/index.md` on disk).
+`default_path` in `pages.yml` is the file used when the URL has no hash. If the hash is unknown, the nav tree is consulted as a fallback. This site sets `default_path: content/start.md` so the first thing a new reader sees is the [Start here](#start) page.
 
-**Related:** [Get started](#docs/get-started) · [yamd manual](#docs/index)
+## Mental model
+
+- **Content lives in files.** You can grep it.
+- **Navigation lives in YAML.** You can review it.
+- **Routing is a hash.** You can read it.
+
+If a docs question is not answered by one of those three, it is probably out of scope for yamd.
+
+## Related
+
+- [Get started](#docs/get-started) — the deploy paths that make these URLs real
+- [Product overview](#docs/index) — where this fits in the bigger picture
