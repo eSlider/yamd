@@ -2,7 +2,7 @@ export function renderUiModel(model, options) {
   const { fields, formAttrs } = model;
   if (!Array.isArray(fields) || fields.length === 0) {
     const empty = document.createElement("div");
-    empty.className = "yamd-ui yamd-ui--empty";
+    empty.className = "empty";
     empty.textContent = "Empty UI block";
     return empty;
   }
@@ -12,9 +12,7 @@ export function renderUiModel(model, options) {
     ? document.createElement("form")
     : document.createElement("div");
   const fa = formAttrs && typeof formAttrs === "object" ? formAttrs : {};
-  const base = "yamd-ui" + (useForm ? " yamd-ui--form" : " yamd-ui--panel");
-  const extra = typeof fa.class === "string" && fa.class.trim() ? " " + fa.class.trim() : "";
-  el.className = base + extra;
+  applyExtraClass(el, fa.class);
 
   if (useForm && el instanceof HTMLFormElement) {
     if (options && options.action) {
@@ -45,7 +43,7 @@ export function renderUiModel(model, options) {
   }
 
   const stack = document.createElement("div");
-  stack.className = "yamd-ui__stack";
+  stack.className = "stack";
   for (const field of fields) {
     stack.appendChild(renderField(field, useForm));
   }
@@ -105,7 +103,8 @@ function renderField(field, inForm) {
 
   if (!isLeafType(field.type) && field.type === "form" && kids) {
     const fs = document.createElement("fieldset");
-    fs.className = fieldClass(field, "yamd-form-nested");
+    fs.className = "nested";
+    applyExtraClass(fs, field.class);
     if (field.id) {
       fs.id = String(field.id);
     }
@@ -120,7 +119,6 @@ function renderField(field, inForm) {
     }
     if (field.title) {
       const leg = document.createElement("legend");
-      leg.className = "yamd-form-nested__legend";
       leg.textContent = String(field.title);
       fs.appendChild(leg);
     }
@@ -132,7 +130,8 @@ function renderField(field, inForm) {
 
   if (field.type === "children" && kids) {
     const group = document.createElement("div");
-    group.className = fieldClass(field, "yamd-group");
+    group.className = "group";
+    applyExtraClass(group, field.class);
     for (const c of kids) {
       group.appendChild(renderField(c, inForm));
     }
@@ -141,10 +140,9 @@ function renderField(field, inForm) {
 
   if (kids && field.type !== "form" && field.type !== "children" && !isLeafType(field.type)) {
     const group = document.createElement("fieldset");
-    group.className = fieldClass(field, "yamd-fieldset");
+    applyExtraClass(group, field.class);
     if (field.title) {
       const cap = document.createElement("legend");
-      cap.className = "yamd-fieldset__legend";
       cap.textContent = String(field.title);
       group.appendChild(cap);
     }
@@ -171,10 +169,10 @@ function renderField(field, inForm) {
     case "submit":
     case "button": {
       const row = document.createElement("div");
-      row.className = "yamd-control yamd-control--button";
+      row.className = "control button";
+      applyExtraClass(row, field.class);
       const b = document.createElement("button");
       b.type = field.type === "button" ? "button" : "submit";
-      b.className = fieldClass(field, "yamd-btn");
       b.textContent = String(field.label || field.title || "Submit");
       if (field.name) {
         b.name = field.name;
@@ -187,29 +185,37 @@ function renderField(field, inForm) {
     }
     default: {
       const p = document.createElement("p");
-      p.className = "yamd-unknown";
+      p.className = "unknown";
       p.textContent = `Unknown UI type: ${String(field.type)}`;
       return p;
     }
   }
 }
 
-function fieldClass(field, base) {
-  const extra = typeof field.class === "string" && field.class.trim() ? " " + field.class.trim() : "";
-  return base + extra;
+function applyExtraClass(el, cls) {
+  if (typeof cls !== "string") {
+    return;
+  }
+  const t = cls.trim();
+  if (!t) {
+    return;
+  }
+  for (const c of t.split(/\s+/)) {
+    el.classList.add(c);
+  }
 }
 
 function buildControl(field, kind, inForm) {
   const row = document.createElement("div");
-  row.className = fieldClass(field, "yamd-control yamd-control--" + kind);
+  row.className = "control " + kind;
+  applyExtraClass(row, field.class);
   if (field.variant) {
     row.setAttribute("data-variant", String(field.variant));
   }
 
-  const id = field.id || (field.name ? "yamd-" + field.name : "");
+  const id = field.id || (field.name ? "f-" + field.name : "");
   if (field.title && (kind === "input" || kind === "textarea" || kind === "select")) {
     const lab = document.createElement("label");
-    lab.className = "yamd-control__label";
     if (id) {
       lab.setAttribute("for", id);
     }
@@ -255,35 +261,10 @@ function buildControl(field, kind, inForm) {
     }
     applyMandatory(ta, field, inForm);
     row.appendChild(ta);
-  } else if (kind === "checkbox") {
+  } else if (kind === "checkbox" || kind === "radio") {
     const wrap = document.createElement("label");
-    wrap.className = "yamd-control__inline";
     const input = document.createElement("input");
-    input.type = "checkbox";
-    if (id) {
-      input.id = id;
-    }
-    if (field.name) {
-      input.name = field.name;
-    }
-    input.className = "yamd-checkbox";
-    if (field.value) {
-      input.value = String(field.value);
-    }
-    applyMandatory(input, field, inForm);
-    wrap.appendChild(input);
-    if (field.title) {
-      const t = document.createElement("span");
-      t.className = "yamd-control__title";
-      t.textContent = String(field.title);
-      wrap.appendChild(t);
-    }
-    row.appendChild(wrap);
-  } else if (kind === "radio") {
-    const wrap = document.createElement("label");
-    wrap.className = "yamd-control__inline";
-    const input = document.createElement("input");
-    input.type = "radio";
+    input.type = kind;
     if (id) {
       input.id = id;
     }
@@ -297,7 +278,6 @@ function buildControl(field, kind, inForm) {
     wrap.appendChild(input);
     if (field.title) {
       const t = document.createElement("span");
-      t.className = "yamd-control__title";
       t.textContent = String(field.title);
       wrap.appendChild(t);
     }

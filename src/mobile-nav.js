@@ -35,8 +35,8 @@ export function setupMobileNav(els) {
       return;
     }
     if (open) {
-      document.documentElement.classList.add("yamd-nav--open");
-      document.body.classList.add("yamd-nav--lock");
+      document.documentElement.classList.add("nav-open");
+      document.body.classList.add("nav-lock");
       menubtn.setAttribute("aria-expanded", "true");
       menubtn.setAttribute("aria-label", "Close table of contents");
       if (backdrop) {
@@ -49,8 +49,8 @@ export function setupMobileNav(els) {
   }
 
   function clearState() {
-    document.documentElement.classList.remove("yamd-nav--open");
-    document.body.classList.remove("yamd-nav--lock");
+    document.documentElement.classList.remove("nav-open");
+    document.body.classList.remove("nav-lock");
     menubtn.setAttribute("aria-expanded", "false");
     menubtn.setAttribute("aria-label", "Open table of contents");
     if (backdrop) {
@@ -68,7 +68,7 @@ export function setupMobileNav(els) {
   }
 
   function toggle() {
-    if (document.documentElement.classList.contains("yamd-nav--open")) {
+    if (document.documentElement.classList.contains("nav-open")) {
       setOpen(false);
     } else {
       setOpen(true);
@@ -84,7 +84,7 @@ export function setupMobileNav(els) {
     });
   }
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && isMobileLayout() && document.documentElement.classList.contains("yamd-nav--open")) {
+    if (e.key === "Escape" && isMobileLayout() && document.documentElement.classList.contains("nav-open")) {
       e.preventDefault();
       close();
     }

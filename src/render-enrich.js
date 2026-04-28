@@ -3,8 +3,8 @@
  * Sub-modules are loaded only when the rendered DOM contains the matching block.
  * Order: Mermaid first (replaces ` ```mermaid` pres), then Prism (syntax colours other fences).
  */
-import { runMermaidInRoot } from "./mermaid-lazy.js";
-import { runPrismInRoot } from "./prism-lazy.js";
+import { runMermaidInRoot } from "./render-mermaid.js";
+import { runPrismInRoot } from "./render-prism.js";
 
 /**
  * @param {HTMLElement} root

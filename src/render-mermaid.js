@@ -31,7 +31,7 @@ function loadMermaid() {
 }
 
 /**
- * @param {HTMLElement} root — host of rendered article (e.g. #yamd-content)
+ * @param {HTMLElement} root — host of rendered article (e.g. #content)
  */
 export async function runMermaidInRoot(root) {
   const codes = queryMermaidCodes(root);
@@ -46,18 +46,18 @@ export async function runMermaidInRoot(root) {
     }
     const def = (code.textContent || "").replace(/\n$/, "");
     const out = document.createElement("div");
-    out.className = "yamd-mermaid";
+    out.className = "mermaid";
     out.setAttribute("role", "img");
     if (def.trim().slice(0, 80)) {
       out.setAttribute("aria-label", "Diagram: " + def.trim().slice(0, 80).replace(/\s+/g, " ") + (def.length > 80 ? "…" : ""));
     }
-    const id = "yamd-mmd-" + Math.random().toString(36).slice(2) + "-" + String(Date.now());
+    const id = "mmd-" + Math.random().toString(36).slice(2) + "-" + String(Date.now());
     pre.replaceWith(out);
     try {
       const { svg } = await mermaid.render(id, def);
       out.innerHTML = svg;
     } catch (e) {
-      out.className = "yamd-mermaid yamd-mermaid--error";
+      out.className = "mermaid err";
       out.removeAttribute("role");
       out.removeAttribute("aria-label");
       out.textContent = (e instanceof Error ? e.message : String(e)) || "Mermaid render error";

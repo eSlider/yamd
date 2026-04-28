@@ -332,7 +332,6 @@ function setNavTitleWithHighlights(/** @type {HTMLElement} */ el, /** @type {str
           el.appendChild(document.createTextNode(text.slice(pos, a)));
         }
         const mark = document.createElement("mark");
-        mark.className = "yamd-nav__mark";
         mark.appendChild(document.createTextNode(text.slice(a, b)));
         el.appendChild(mark);
         pos = b;
@@ -345,7 +344,7 @@ function setNavTitleWithHighlights(/** @type {HTMLElement} */ el, /** @type {str
   if (typeof matchCount === "number") {
     el.appendChild(document.createTextNode(" ("));
     const c = document.createElement("span");
-    c.className = "yamd-nav__matchcount";
+    c.className = "count";
     c.textContent = String(matchCount);
     el.appendChild(c);
     el.appendChild(document.createTextNode(")"));
@@ -394,10 +393,8 @@ export function renderNavTree(
 ) {
   el.textContent = "";
   const nav = document.createElement("nav");
-  nav.className = "yamd-nav";
   nav.setAttribute("aria-label", "Site");
   const ul = document.createElement("ul");
-  ul.className = "yamd-nav__list yamd-nav__list--root";
   const cNorm = norm(currentPath);
   const hq = (highlightQuery && String(highlightQuery).trim()) || "";
   const hTerms = hq
@@ -428,11 +425,12 @@ function renderNavItem(/** @type {NavItem} */ n, cNorm, onNavigate, pathFilter, 
     return null;
   }
   const li = document.createElement("li");
-  li.className = "yamd-nav__item";
   const mCount = n.path && pathMatchCounts ? pathMatchCounts.get(norm(n.path)) : undefined;
   if (n.path) {
     const a = document.createElement("a");
-    a.className = "yamd-nav__link" + (n.items && n.items.length ? " yamd-nav__link--branch" : "");
+    if (n.items && n.items.length) {
+      a.className = "branch";
+    }
     setNavTitleWithHighlights(a, n.title, highlightTerms, mCount);
     a.href = pathToHref(n.path);
     a.dataset.path = n.path;
@@ -449,13 +447,12 @@ function renderNavItem(/** @type {NavItem} */ n, cNorm, onNavigate, pathFilter, 
     li.appendChild(a);
   } else {
     const t = document.createElement("span");
-    t.className = "yamd-nav__label";
+    t.className = "label";
     setNavTitleWithHighlights(t, n.title, highlightTerms, undefined);
     li.appendChild(t);
   }
   if (n.items && n.items.length) {
     const sub = document.createElement("ul");
-    sub.className = "yamd-nav__sub";
     for (const c of n.items) {
       const ch = renderNavItem(c, cNorm, onNavigate, pathFilter, highlightTerms, pathMatchCounts);
       if (ch) {

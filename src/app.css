@@ -1,145 +1,80 @@
 :root {
   color-scheme: light dark;
-  --yamd-bg: canvas;
-  --yamd-fg: canvasText;
-  --yamd-muted: #666;
-  --yamd-border: color-mix(in srgb, canvasText 18%, transparent);
-  --yamd-radius: 10px;
-  --yamd-font: Inter, Roboto, "Open Sans", sans-serif, ui-sans-serif, system-ui, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"
-  
-  /* system-ui, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", sans-serif; */
-  --yamd-mono: ui-monospace, "Cascadia Code", "Fira Code", Consolas, monospace;
+  --bg: canvas;
+  --fg: canvasText;
+  --muted: #666;
+  --border: color-mix(in srgb, canvasText 18%, transparent);
+  --radius: 10px;
+  --font: "Inter", system-ui, ui-sans-serif, Roboto, "Open Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji", sans-serif;
+  --mono: "Iosevka", ui-monospace, "Cascadia Code", "Fira Code", Consolas, monospace;
 }
 
-* {
-  box-sizing: border-box;
-}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"]  { color-scheme: dark; }
+
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
   min-height: 100vh;
-  background: var(--yamd-bg);
-  color: var(--yamd-fg);
-  font: 16px/1.5 var(--yamd-font);
+  background: var(--bg);
+  color: var(--fg);
+  font: 16px/1.5 var(--font);
 }
 
-body.yamd-nav--lock {
+body.nav-lock {
   overflow: hidden;
   touch-action: none;
   overscroll-behavior: none;
 }
 
-.yamd-shell {
+/* —— Shell layout —— */
+.shell {
   display: flex;
-  flex-direction: row;
   align-items: flex-start;
   max-width: 64rem;
   margin: 0 auto;
-  gap: 0;
   min-height: 100vh;
 }
 
-.yamd-shell__nav {
+.shell > #nav {
   flex: 0 0 12.5rem;
-  min-width: 0;
   position: sticky;
   top: 0;
   max-height: 100vh;
   overflow: auto;
   padding: 1.25rem 0.9rem 2rem 1.1rem;
-  border-right: 1px solid var(--yamd-border);
-  background: color-mix(in srgb, var(--yamd-bg) 92%, canvasText 2%);
+  border-right: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 92%, canvasText 2%);
 }
 
-.yamd-shell__main {
+.shell > #content {
   flex: 1 1 0;
   min-width: 0;
-  max-width: 52rem;
-  margin: 0;
+  max-width: none;
+  padding: 1.5rem 1.25rem 2.5rem 1.1rem;
 }
 
-.yamd-nav {
-  font-size: 0.9rem;
-}
+.loading,
+.error { color: var(--muted); }
 
-/* —— Sidebar filter (narrows the nav tree; full index on search focus) —— */
-.yamd-nav__tree {
-  min-width: 0;
-}
-
-.yamd-nav-search {
-  margin: 0 0 0.85rem;
-}
-
-.yamd-nav-search__label {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
-}
-
-.yamd-nav-search__input {
-  display: block;
-  width: 100%;
-  box-sizing: border-box;
-  margin: 0 0 0.35rem;
-  padding: 0.4rem 0.5rem;
-  font: inherit;
-  font-size: 0.9rem;
-  line-height: 1.35;
-  color: inherit;
-  background: var(--yamd-bg);
-  border: 1px solid var(--yamd-border);
-  border-radius: 8px;
-}
-
-.yamd-nav-search__input::placeholder {
-  color: var(--yamd-muted);
-  opacity: 0.9;
-}
-
-.yamd-nav-search__input:focus {
-  outline: 2px solid color-mix(in srgb, canvasText 35%, var(--yamd-border));
-  outline-offset: 1px;
-}
-
-.yamd-nav-search__status {
-  margin: 0;
-  min-height: 1.2em;
-  font-size: 0.75rem;
-  line-height: 1.3;
-  color: var(--yamd-muted);
-}
-
-.yamd-nav__list,
-.yamd-nav__sub {
+/* —— Sidebar (nav tree + filter) —— */
+#nav nav { font-size: 0.9rem; }
+#nav ul {
   list-style: none;
   margin: 0;
   padding: 0;
 }
-
-.yamd-nav__list--root > .yamd-nav__item {
-  margin-bottom: 0.4rem;
-}
-
-.yamd-nav__sub {
-  margin-top: 0.35rem;
-  margin-left: 0.4rem;
+#nav nav > ul > li { margin-bottom: 0.4rem; }
+#nav ul ul {
+  margin: 0.35rem 0 0 0.4rem;
   padding-left: 0.5rem;
-  border-left: 1px solid color-mix(in srgb, var(--yamd-border) 60%, transparent);
+  border-left: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
 }
+#nav li { margin: 0.1rem 0 0.25rem; }
 
-.yamd-nav__item {
-  margin: 0.1rem 0 0.25rem;
-}
-
-.yamd-nav__link,
-.yamd-nav__label {
+#nav a,
+#nav span.label {
   display: block;
   line-height: 1.4;
   padding: 0.2rem 0.15rem;
@@ -147,78 +82,109 @@ body.yamd-nav--lock {
   color: inherit;
   text-decoration: none;
 }
-
-.yamd-nav__link[aria-current="page"] {
+#nav a[aria-current="page"] {
   font-weight: 600;
-  background: color-mix(in srgb, var(--yamd-border) 30%, transparent);
+  background: color-mix(in srgb, var(--border) 30%, transparent);
 }
-
-.yamd-nav__mark {
-  padding: 0 0.08em;
-  border-radius: 3px;
-  background: color-mix(in srgb, #f59e0b 40%, var(--yamd-bg) 60%);
-  color: inherit;
-  font: inherit;
-  font-weight: inherit;
-}
-
-@media (prefers-color-scheme: dark) {
-  .yamd-nav__mark {
-    background: color-mix(in srgb, #d97706 45%, var(--yamd-bg) 55%);
-  }
-}
-
-.yamd-nav__matchcount {
-  font-weight: 600;
-  color: var(--yamd-muted);
-  font-style: normal;
-  font-size: 0.92em;
-  white-space: nowrap;
-}
-
-.yamd-nav__link:hover,
-.yamd-nav__link:focus-visible {
-  background: color-mix(in srgb, var(--yamd-border) 20%, transparent);
+#nav a:hover,
+#nav a:focus-visible {
+  background: color-mix(in srgb, var(--border) 20%, transparent);
   outline: none;
 }
-
-.yamd-nav__label {
-  color: var(--yamd-muted);
+#nav a.branch { font-weight: 500; }
+#nav span.label {
+  color: var(--muted);
   font-weight: 600;
   font-size: 0.9rem;
   margin-top: 0.2rem;
 }
 
-.yamd-nav__link--branch {
-  font-weight: 500;
+#nav mark {
+  padding: 0 0.08em;
+  border-radius: 3px;
+  background: color-mix(in srgb, #f59e0b 40%, var(--bg) 60%);
+  color: inherit;
+  font: inherit;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) #nav mark {
+    background: color-mix(in srgb, #d97706 45%, var(--bg) 55%);
+  }
+}
+:root[data-theme="dark"] #nav mark {
+  background: color-mix(in srgb, #d97706 45%, var(--bg) 55%);
 }
 
-/* —— Mobile: top bar + off-canvas nav + scrim (like a typical in-app menu) —— */
-.yamd-menubar {
+#nav .count {
+  font-weight: 600;
+  color: var(--muted);
+  font-size: 0.92em;
+  white-space: nowrap;
+}
+
+/* —— Sidebar filter —— */
+#nav .search { margin: 0 0 0.85rem; }
+#nav .search > label {
+  position: absolute;
+  width: 1px; height: 1px;
+  padding: 0; margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+#nav .search > input {
+  display: block;
+  width: 100%;
+  margin: 0 0 0.35rem;
+  padding: 0.4rem 0.5rem;
+  font: inherit;
+  font-size: 0.9rem;
+  color: inherit;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+#nav .search > input::placeholder {
+  color: var(--muted);
+  opacity: 0.9;
+}
+#nav .search > input:focus {
+  outline: 2px solid color-mix(in srgb, canvasText 35%, var(--border));
+  outline-offset: 1px;
+}
+#nav .search > .status {
+  margin: 0;
+  min-height: 1.2em;
+  font-size: 0.75rem;
+  line-height: 1.3;
+  color: var(--muted);
+}
+
+/* —— Mobile menubar + drawer —— */
+#menubar {
   display: none;
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
+  top: 0; left: 0; right: 0;
   z-index: 800;
   align-items: center;
   gap: 0.5rem;
   min-height: calc(3.25rem + env(safe-area-inset-top, 0));
   padding: env(safe-area-inset-top, 0) 0.5rem 0.25rem 0.6rem;
-  border-bottom: 1px solid var(--yamd-border);
-  background: color-mix(in srgb, var(--yamd-bg) 96%, canvasText 1%);
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg) 96%, canvasText 1%);
   backdrop-filter: blur(8px);
 }
 
-.yamd-menubtn {
+#menubar > button {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
   margin: 0;
   padding: 0.45rem 0.55rem;
-  border: 1px solid var(--yamd-border);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  background: color-mix(in srgb, var(--yamd-bg) 90%, canvasText 2%);
+  background: color-mix(in srgb, var(--bg) 90%, canvasText 2%);
   color: inherit;
   font: inherit;
   font-weight: 600;
@@ -226,14 +192,13 @@ body.yamd-nav--lock {
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 }
-
-.yamd-menubtn:hover,
-.yamd-menubtn:focus-visible {
-  background: color-mix(in srgb, var(--yamd-border) 15%, var(--yamd-bg));
+#menubar > button:hover,
+#menubar > button:focus-visible {
+  background: color-mix(in srgb, var(--border) 15%, var(--bg));
   outline: none;
 }
 
-.yamd-menubtn__hamburger {
+#menubar > button > span:first-child {
   position: relative;
   display: flex;
   flex-direction: column;
@@ -242,8 +207,7 @@ body.yamd-nav--lock {
   width: 1.15rem;
   height: 0.9rem;
 }
-
-.yamd-menubtn__line {
+#menubar > button > span:first-child > span {
   display: block;
   height: 2px;
   width: 100%;
@@ -252,30 +216,19 @@ body.yamd-nav--lock {
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
-html.yamd-nav--open .yamd-menubtn__hamburger {
-  justify-content: center;
-  gap: 0;
-}
-html.yamd-nav--open .yamd-menubtn__hamburger .yamd-menubtn__line {
+html.nav-open #menubar > button > span:first-child { gap: 0; }
+html.nav-open #menubar > button > span:first-child > span {
   position: absolute;
-  left: 0;
-  right: 0;
+  left: 0; right: 0;
   top: 50%;
   margin-top: -1px;
   width: 100%;
 }
-html.yamd-nav--open .yamd-menubtn__hamburger .yamd-menubtn__line:nth-child(1) {
-  transform: rotate(45deg);
-}
-html.yamd-nav--open .yamd-menubtn__hamburger .yamd-menubtn__line:nth-child(2) {
-  opacity: 0;
-  transform: scale(0.2);
-}
-html.yamd-nav--open .yamd-menubtn__hamburger .yamd-menubtn__line:nth-child(3) {
-  transform: rotate(-45deg);
-}
+html.nav-open #menubar > button > span:first-child > span:nth-child(1) { transform: rotate(45deg); }
+html.nav-open #menubar > button > span:first-child > span:nth-child(2) { opacity: 0; transform: scale(0.2); }
+html.nav-open #menubar > button > span:first-child > span:nth-child(3) { transform: rotate(-45deg); }
 
-.yamd-menubar__title {
+#menubar > span:last-child {
   font-weight: 700;
   font-size: 1.05rem;
   letter-spacing: -0.02em;
@@ -286,51 +239,35 @@ html.yamd-nav--open .yamd-menubtn__hamburger .yamd-menubtn__line:nth-child(3) {
   text-overflow: ellipsis;
 }
 
-.yamd-nav-backdrop {
+#backdrop {
   display: none;
   position: fixed;
   inset: 0;
   z-index: 600;
-  margin: 0;
-  padding: 0;
-  border: none;
   background: color-mix(in srgb, #0f172a 55%, transparent);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
-
-html.yamd-nav--open .yamd-nav-backdrop {
+html.nav-open #backdrop {
   display: block;
-  animation: yamd-backdrop-in 0.2s ease-out;
+  animation: backdrop-in 0.2s ease-out;
 }
-
-@keyframes yamd-backdrop-in {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 @media (max-width: 52rem) {
-  .yamd-menubar:not([hidden]) {
-    display: flex;
-  }
-
-  .yamd-menubar:not([hidden]) ~ .yamd-shell {
+  #menubar:not([hidden]) { display: flex; }
+  #menubar:not([hidden]) ~ .shell {
     padding-top: calc(3.25rem + env(safe-area-inset-top, 0));
   }
+  .shell { flex-direction: column; }
 
-  .yamd-shell {
-    flex-direction: column;
-  }
-
-  .yamd-shell__nav {
+  .shell > #nav {
     position: fixed;
     top: calc(3.25rem + env(safe-area-inset-top, 0));
-    left: 0;
-    bottom: 0;
+    left: 0; bottom: 0;
     z-index: 700;
     width: min(20rem, 90vw);
     max-width: 100%;
@@ -339,10 +276,12 @@ html.yamd-nav--open .yamd-nav-backdrop {
     margin: 0;
     padding: 0.9rem 0.9rem 2rem 1.1rem;
     padding-left: max(1.1rem, env(safe-area-inset-left, 0));
-    border-right: 1px solid var(--yamd-border);
+    border-right: 1px solid var(--border);
     border-bottom: none;
-    background: color-mix(in srgb, var(--yamd-bg) 96%, canvasText 2%);
-    box-shadow: 0 0 0 1px color-mix(in srgb, var(--yamd-border) 50%, transparent), 0 12px 40px color-mix(in srgb, #000 18%, transparent);
+    background: color-mix(in srgb, var(--bg) 96%, canvasText 2%);
+    box-shadow:
+      0 0 0 1px color-mix(in srgb, var(--border) 50%, transparent),
+      0 12px 40px color-mix(in srgb, #000 18%, transparent);
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
@@ -350,53 +289,22 @@ html.yamd-nav--open .yamd-nav-backdrop {
     transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
     will-change: transform;
   }
-
-  .yamd-shell__nav[hidden] {
-    display: none;
-  }
-
-  .yamd-shell__nav:not([hidden]) {
-    display: block;
-  }
-
-  html.yamd-nav--open .yamd-shell__nav:not([hidden]) {
-    transform: translate3d(0, 0, 0);
-  }
+  .shell > #nav[hidden]      { display: none; }
+  .shell > #nav:not([hidden]) { display: block; }
+  html.nav-open .shell > #nav:not([hidden]) { transform: translate3d(0, 0, 0); }
 }
 
 @media (max-width: 52rem) and (prefers-reduced-motion: reduce) {
-  .yamd-shell__nav {
-    transition: none;
-  }
-  html.yamd-nav--open .yamd-nav-backdrop {
-    animation: none;
-  }
+  .shell > #nav { transition: none; }
+  html.nav-open #backdrop { animation: none; }
 }
 
 @media (min-width: 52.01rem) {
-  .yamd-nav-backdrop[hidden] {
-    display: none !important;
-  }
+  #backdrop[hidden] { display: none !important; }
 }
 
-.yamd-app {
-  max-width: 52rem;
-  margin: 0 auto;
-  padding: 1.5rem 1rem 2.5rem;
-}
-
-.yamd-shell__main.yamd-app {
-  max-width: none;
-  margin: 0;
-  padding: 1.5rem 1.25rem 2.5rem 1.1rem;
-}
-
-.yamd-loading,
-.yamd-error {
-  color: var(--yamd-muted);
-}
-
-.yamd-article__title {
+/* —— Article (rendered markdown + UI blocks) —— */
+#content > article > h1 {
   font-size: clamp(1.5rem, 3vw, 2rem);
   line-height: 1.2;
   margin: 0 0 1rem;
@@ -404,192 +312,213 @@ html.yamd-nav--open .yamd-nav-backdrop {
   letter-spacing: -0.02em;
 }
 
-.yamd-md {
-  margin: 0 0 1.25rem;
-}
-
-.yamd-md a {
+.md { margin: 0 0 1.25rem; }
+.md a {
   color: inherit;
   text-decoration-skip-ink: auto;
 }
 
-/* GFM-style tables (GitHub-like: thin 1px grid) */
-.yamd-md table {
+.md table {
   display: table;
   width: 100%;
-  max-width: 100%;
   border-collapse: collapse;
-  border-spacing: 0;
   margin: 0 0 1.1rem;
   font-size: 0.95em;
-  box-sizing: border-box;
 }
-.yamd-md th,
-.yamd-md td {
-  border: 1px solid var(--yamd-border);
+.md th,
+.md td {
+  border: 1px solid var(--border);
   padding: 0.4em 0.8em;
   line-height: 1.45;
   vertical-align: top;
   text-align: start;
 }
-.yamd-md th {
-  font-weight: 600;
-}
-.yamd-md thead th {
-  background: color-mix(in srgb, canvasText 5%, var(--yamd-bg));
-}
-/* .yamd-md tbody tr:nth-child(even) td {
-  background: color-mix(in srgb, canvasText 2%, var(--yamd-bg));
-} */
-.yamd-md pre,
-.yamd-md code {
-  font-family: var(--yamd-mono);
+.md th { font-weight: 600; }
+.md thead th { background: color-mix(in srgb, canvasText 5%, var(--bg)); }
+
+.md pre,
+.md code {
+  font-family: var(--mono);
   font-size: 0.9em;
 }
-
-.yamd-md pre {
+.md pre {
   padding: 0.85rem 1rem;
-  border: 1px solid var(--yamd-border);
-  border-radius: var(--yamd-radius);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   overflow: auto;
   background: color-mix(in srgb, canvas 92%, black 8%);
 }
-
-/* Prism (okaidia) when lazy-enrichers run — overrides plain `pre` background */
-.yamd-md pre.yamd-md__pre--prism {
+.md pre.prism {
   background: #272822;
   color: #f8f8f2;
 }
-.yamd-md pre.yamd-md__pre--prism > code {
+.md pre.prism > code {
   color: inherit;
   background: transparent;
 }
 
-.yamd-ui-block {
-  margin: 1.5rem 0;
-}
-
-.yamd-ui {
-  border: 1px solid var(--yamd-border);
-  border-radius: var(--yamd-radius);
+/* —— UI block —— */
+.ui { margin: 1.5rem 0; }
+.ui > form,
+.ui > div {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 1rem 1.1rem 1.15rem;
   background: color-mix(in srgb, canvas 88%, white 0%);
 }
-
-.yamd-form-nested {
-  border: 1px dashed var(--yamd-border);
-  border-radius: 8px;
-  margin: 0.2rem 0 0.5rem;
-  min-width: 0;
-  padding: 0.4rem 0.65rem 0.5rem;
+.ui > div.empty {
+  background: transparent;
+  color: var(--muted);
+  font-style: italic;
 }
 
-.yamd-form-nested__legend {
-  font-size: 0.9rem;
-  font-weight: 600;
-  padding: 0 0.1rem;
-}
-
-.yamd-ui__stack {
+.ui .stack {
   display: flex;
   flex-direction: column;
   gap: 0.85rem;
 }
 
-.yamd-control__label {
+.ui .control > label {
   display: block;
   font-weight: 600;
   margin-bottom: 0.3rem;
 }
-
-.yamd-control input,
-.yamd-control textarea,
-.yamd-control select {
+.ui .control > input,
+.ui .control > textarea,
+.ui .control > select {
   width: 100%;
   max-width: 28rem;
   font: inherit;
   padding: 0.4rem 0.55rem;
-  border: 1px solid var(--yamd-border);
+  border: 1px solid var(--border);
   border-radius: 8px;
   background: canvas;
   color: inherit;
 }
-
-.yamd-control textarea {
+.ui .control > textarea {
   min-height: 5rem;
   resize: vertical;
 }
 
-.yamd-control--checkbox .yamd-control__inline,
-.yamd-control--radio .yamd-control__inline {
+.ui .control.checkbox > label,
+.ui .control.radio > label {
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  max-width: none;
+  font-weight: 400;
+  margin: 0;
 }
 
-.yamd-control--checkbox .yamd-control__label,
-.yamd-control--radio .yamd-control__label {
-  display: none;
-}
-
-.yamd-btn {
+.ui .control > button {
   display: inline-flex;
   align-items: center;
   padding: 0.45rem 0.95rem;
-  border: 1px solid var(--yamd-border);
+  border: 1px solid var(--border);
   border-radius: 999px;
   background: color-mix(in srgb, canvas 88%, currentColor 3%);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
 }
-
-.yamd-btn:hover {
-  filter: brightness(1.05);
+.ui .control > button:hover { filter: brightness(1.05); }
+@media (prefers-reduced-motion: reduce) {
+  .ui .control > button:hover { filter: none; }
 }
 
-.yamd-fieldset {
-  border: 1px solid var(--yamd-border);
-  border-radius: var(--yamd-radius);
+.ui fieldset {
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   margin: 0;
   padding: 0.75rem 0.9rem 0.9rem;
 }
-
-.yamd-fieldset__legend {
+.ui fieldset.nested {
+  border-style: dashed;
+  border-radius: 8px;
+  padding: 0.4rem 0.65rem 0.5rem;
+}
+.ui fieldset > legend {
   padding: 0 0.2rem;
   font-weight: 600;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .yamd-btn:hover {
-    filter: none;
-  }
-}
+.ui .group { display: contents; }
+.ui .unknown { color: var(--muted); font-style: italic; }
 
-/* Mermaid output (replaces `pre>code.language-mermaid` after lazy render) */
-.yamd-mermaid {
+/* —— Mermaid output —— */
+.mermaid {
   margin: 0.5rem 0 1.25rem;
   padding: 0.75rem 0.9rem;
   max-width: 100%;
   overflow: auto;
-  border: 1px solid var(--yamd-border);
-  border-radius: var(--yamd-radius);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   background: color-mix(in srgb, canvas 90%, black 4%);
 }
-.yamd-mermaid svg {
+.mermaid svg {
   max-width: 100%;
   height: auto;
   display: block;
 }
-.yamd-mermaid--error {
+.mermaid.err {
   font-size: 0.85em;
-  font-family: var(--yamd-mono);
+  font-family: var(--mono);
   color: #c00;
   white-space: pre-wrap;
 }
 @media (prefers-color-scheme: light) {
-  .yamd-mermaid--error {
-    color: #a00;
-  }
+  :root:not([data-theme="dark"]) .mermaid.err { color: #a00; }
+}
+:root[data-theme="light"] .mermaid.err { color: #a00; }
+
+/* —— Theme switcher —— */
+#theme-btn {
+  position: fixed;
+  top: calc(env(safe-area-inset-top, 0) + 0.6rem);
+  right: calc(env(safe-area-inset-right, 0) + 0.75rem);
+  z-index: 850;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+  margin: 0;
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--bg) 88%, canvasText 4%);
+  color: inherit;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 12px color-mix(in srgb, #000 10%, transparent);
+  transition: background 120ms ease, transform 120ms ease;
+}
+#theme-btn:hover {
+  background: color-mix(in srgb, var(--border) 35%, var(--bg));
+}
+#theme-btn:focus-visible {
+  outline: 2px solid color-mix(in srgb, canvasText 35%, var(--border));
+  outline-offset: 2px;
+}
+#theme-btn:active { transform: scale(0.94); }
+
+#theme-btn > span {
+  display: none;
+  width: 1.15rem;
+  height: 1.15rem;
+}
+#theme-btn > span > svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#theme-btn > span:first-child { display: inline-flex; }
+
+:root[data-theme="dark"] #theme-btn > span:first-child { display: none; }
+:root[data-theme="dark"] #theme-btn > span:last-child  { display: inline-flex; }
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) #theme-btn > span:first-child { display: none; }
+  :root:not([data-theme="light"]) #theme-btn > span:last-child  { display: inline-flex; }
 }

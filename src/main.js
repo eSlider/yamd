@@ -1,8 +1,9 @@
 import { compile } from "./document.js";
-import { render } from "./render.js";
-import { runLazyEnrichers } from "./lazy-enrichers.js";
+import { render } from "./render-article.js";
+import { runLazyEnrichers } from "./render-enrich.js";
 import { setupMobileNav } from "./mobile-nav.js";
 import { setupNavSearch } from "./nav-search.js";
+import { setupThemeSwitcher } from "./theme-switcher.js";
 import {
   coalescePath,
   collectPageEntriesForSearch,
@@ -53,10 +54,10 @@ function whenDocumentReady(fn) {
 }
 
 function initRoots() {
-  el = document.getElementById("yamd-content");
-  navHost = document.getElementById("yamd-nav-wrap");
+  el = document.getElementById("content");
+  navHost = document.getElementById("nav");
   if (!el) {
-    throw new Error("#yamd-content");
+    throw new Error("#content");
   }
 }
 
@@ -96,7 +97,7 @@ async function loadTree() {
       navHost.setAttribute("hidden", "");
     }
   }
-  const menubar = document.getElementById("yamd-menubar");
+  const menubar = document.getElementById("menubar");
   if (menubar) {
     if (hasNav) {
       menubar.removeAttribute("hidden");
@@ -137,7 +138,7 @@ function drawNav(/** @type {string} */ rel) {
     );
     navHost.appendChild(navSearch.root);
     navTreeRoot = document.createElement("div");
-    navTreeRoot.className = "yamd-nav__tree";
+    navTreeRoot.className = "tree";
     navHost.appendChild(navTreeRoot);
   }
   renderNavTree(
@@ -184,7 +185,7 @@ async function go(/** @type {string|undefined} */ explicitPath) {
     await runLazyEnrichers(el);
   } catch (e) {
     const p = document.createElement("p");
-    p.className = "yamd-error";
+    p.className = "error";
     p.textContent = "Error: " + (e instanceof Error ? e.message : String(e));
     el.replaceChildren(p);
   }
@@ -194,9 +195,11 @@ async function go(/** @type {string|undefined} */ explicitPath) {
 whenDocumentReady(() => {
   initRoots();
   mobileNav = setupMobileNav({
-    menubtn: document.getElementById("yamd-menubtn"),
-    backdrop: document.getElementById("yamd-nav-backdrop"),
+    menubtn: document.getElementById("menubtn"),
+    backdrop: document.getElementById("backdrop"),
   });
+
+  setupThemeSwitcher(document.getElementById("theme-btn"));
 
   window.addEventListener("popstate", () => {
     void go();
@@ -217,7 +220,7 @@ whenDocumentReady(() => {
         return;
       }
       const p = document.createElement("p");
-      p.className = "yamd-error";
+      p.className = "error";
       p.textContent = "Error: " + (e instanceof Error ? e.message : String(e));
       el.replaceChildren(p);
     }

@@ -265,15 +265,13 @@ export function setupNavSearch(/** @type {{ onFilterChange: (paths: Set | null, 
   const { onFilterChange } = actions;
 
   const block = document.createElement("div");
-  block.className = "yamd-nav-search";
+  block.className = "search";
   const label = document.createElement("label");
-  label.className = "yamd-nav-search__label";
-  label.setAttribute("for", "yamd-nav-search-input");
+  label.setAttribute("for", "nav-search-input");
   label.textContent = "Filter navigation";
 
   const input = document.createElement("input");
-  input.className = "yamd-nav-search__input";
-  input.id = "yamd-nav-search-input";
+  input.id = "nav-search-input";
   input.type = "search";
   input.name = "q";
   input.autocomplete = "off";
@@ -284,7 +282,7 @@ export function setupNavSearch(/** @type {{ onFilterChange: (paths: Set | null, 
   input.setAttribute("spellcheck", "false");
 
   const status = document.createElement("p");
-  status.className = "yamd-nav-search__status";
+  status.className = "status";
   status.setAttribute("aria-live", "polite");
 
   block.appendChild(label);

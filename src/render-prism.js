@@ -55,13 +55,13 @@ function ensurePrismTheme() {
     return;
   }
   themeInjected = true;
-  if (document.querySelector("link[data-yamd-prism-theme]")) {
+  if (document.querySelector("link[data-prism-theme]")) {
     return;
   }
   const link = document.createElement("link");
   link.rel = "stylesheet";
   link.href = THEME;
-  link.setAttribute("data-yamd-prism-theme", "");
+  link.setAttribute("data-prism-theme", "");
   document.head.appendChild(link);
 }
 
@@ -154,7 +154,7 @@ export async function runPrismInRoot(root) {
   for (const code of blocks) {
     const pre = code.parentElement;
     if (pre && pre.localName.toLowerCase() === "pre") {
-      pre.classList.add("yamd-prism", "yamd-md__pre--prism");
+      pre.classList.add("prism");
     }
   }
 }
