@@ -1,45 +1,7 @@
-:root {
-  color-scheme: light dark;
-
-  /* Light palette — rsms.me/inter (base.css) */
-  --bg: #fff;
-  --fg: #000;
-  --fg-bright: #000;
-  --fg-5: rgba(0, 0, 0, 0.5);
-  --fg-1: rgba(0, 0, 0, 0.08);
-  --muted: var(--fg-5);
-  --border: rgba(0, 0, 0, 0.15);
-  --underline-color: rgba(0, 0, 0, 0.3);
-  --underline-color-bright: rgba(0, 0, 0, 0.6);
-  --unit-bg: var(--fg-1);
-  --code-bg: var(--unit-bg);
-  --blockquote-bg: var(--fg-1);
-  --blockquote-fg: var(--fg);
-
-  /* Accent palette (sRGB fallback values from rsms.me/inter) */
-  --red: #f03009;
-  --yellow: #fff310;
-  --light-yellow: rgb(255, 255, 179);
-  --blue: rgb(3, 102, 230);
-  --green: rgb(38, 220, 78);
-
-  --link-color: var(--blue);
-  --link-hover-color: var(--blue);
-  --link-underline: var(--underline-color);
-  --selection-bg: rgba(3, 102, 230, 0.18);
-  --active-bgcolor: var(--yellow);
-
-  --radius: 10px;
-  --code-radius: 0;
-
-  --font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  --mono: "JetBrains Mono", "Iosevka Extended", "jbmono", ui-monospace, "SF Mono", "Cascadia Code", Consolas, "Liberation Mono", Menlo, monospace;
-}
-
-@import url("https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/400.css");
-@import url("https://cdn.jsdelivr.net/npm/@fontsource/iosevka@5/700.css");
-@import url("https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap");
-
+/* =============================================================================
+   1. Imports & font faces
+   ========================================================================== */
+/* — Inter (variable, by Rasmus Andersson) — */
 @font-face {
   font-family: "Inter";
   font-style: normal;
@@ -56,58 +18,162 @@
   src: url("https://rsms.me/inter/font-files/InterVariable-Italic.woff2?v=4.1") format("woff2");
 }
 
+/* — Iosevka Extended (by Belleve Invis), official build via cdnjs.
+     Family "Iosevka Web" + font-stretch:expanded re-exposed under a flat name. — */
+@font-face {
+  font-family: "Iosevka Extended";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://cdnjs.cloudflare.com/ajax/libs/Iosevka/11.1.1/iosevka/woff2/iosevka-extended.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Iosevka Extended";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("https://cdnjs.cloudflare.com/ajax/libs/Iosevka/11.1.1/iosevka/woff2/iosevka-extendeditalic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Iosevka Extended";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("https://cdnjs.cloudflare.com/ajax/libs/Iosevka/11.1.1/iosevka/woff2/iosevka-extendedbold.woff2") format("woff2");
+}
+
+/* =============================================================================
+   2. Design tokens
+   --------------------------------------------------------------------------
+   Single source of truth. Themed colors use the modern light-dark() function,
+   so the dark palette lives next to the light one (no duplicated blocks).
+   `color-scheme` on :root[data-theme="…"] forces the resolution.
+   ========================================================================== */
+:root {
+  color-scheme: light dark;
+
+  /* — Typography — */
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "Iosevka Extended", ui-monospace, "SF Mono", "Cascadia Code", Consolas, "Liberation Mono", Menlo, monospace;
+  --font: var(--font-sans);
+  --mono: var(--font-mono);
+
+  --fs-xs: 0.72em;
+  --fs-sm: 0.85em;
+  --fs-md: 0.9em;
+  --fs-base: 1em;
+  --fs-lg: 1.05em;
+  --fs-h3: 1em;
+  --fs-h2: 1.6em;
+  --fs-h1: 3.2em;
+  --fs-code: 0.875em;          /* inline + block code */
+  --fs-code-inline: 0.9em;     /* exposed for legacy var(--code-font-size) */
+  --code-font-size: var(--fs-code-inline);
+
+  --lh-base: 1.5;
+  --lh-tight: 1.4;
+  --lh-flat: 1;
+
+  --feature-stylistic: "ss01" 1, "ss02" 1, "ss03" 1, "ss08" 1;
+  --feature-display: "ss01" 1, "ss03" 1, "ss04" 1;
+
+  /* — Radii — */
+  --radius-xs: 3px;
+  --radius-sm: 4px;
+  --radius-input: 8px;
+  --radius: 10px;              /* primary card / button radius */
+  --radius-pill: 999px;
+  --code-radius: 0;
+
+  /* — Borders — */
+  --border-w: 1px;
+
+  /* — Layout — */
+  --shell-max: 64rem;
+  --nav-w: 12.5rem;
+  --menubar-h: 3.25rem;
+
+  /* — Z-index scale — */
+  --z-copy-btn: 1;
+  --z-overlay: 2;
+  --z-backdrop: 600;
+  --z-drawer: 700;
+  --z-menubar: 800;
+  --z-floating: 850;
+
+  /* — Motion — */
+  --ease-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --t-fast: 120ms;
+  --t-base: 200ms;
+  --t-slow: 280ms;
+
+  /* — Accent palette (theme-agnostic) — */
+  --red: #f03009;
+  --yellow: #fff310;
+  --light-yellow: rgb(255, 255, 179);
+  --blue: rgb(3, 102, 230);
+  --green: rgb(38, 220, 78);
+
+  --accent-success: #16a34a;
+  --accent-error: #dc2626;
+  --accent-mark-light: #f59e0b;
+  --accent-mark-dark: #d97706;
+
+  /* — Prism (always dark, regardless of theme) — */
+  --prism-bg: #272822;
+  --prism-fg: #f8f8f2;
+
+  /* — Surfaces & text (light → dark via light-dark()) — */
+  --bg:                      light-dark(#fff,                       #111);
+  --fg:                      light-dark(#000,                       #fafafa);
+  --fg-bright:               light-dark(#000,                       #fff);
+  --fg-5:                    light-dark(rgba(0, 0, 0, 0.5),         rgba(255, 255, 255, 0.5));
+  --fg-1:                    light-dark(rgba(0, 0, 0, 0.08),        rgba(255, 255, 255, 0.08));
+  --muted:                   var(--fg-5);
+  --border:                  light-dark(rgba(0, 0, 0, 0.15),        rgba(255, 255, 255, 0.18));
+  --underline-color:         light-dark(rgba(0, 0, 0, 0.3),         rgba(255, 255, 255, 0.3));
+  --underline-color-bright:  light-dark(rgba(0, 0, 0, 0.6),         rgba(255, 255, 255, 0.6));
+  --unit-bg:                 light-dark(rgba(0, 0, 0, 0.08),        #333);
+  --code-bg:                 var(--unit-bg);
+  --blockquote-bg:           light-dark(rgba(0, 0, 0, 0.08),        rgba(255, 255, 255, 0.06));
+  --blockquote-fg:           var(--fg);
+
+  --link-color:              light-dark(var(--blue),                var(--light-yellow));
+  --link-hover-color:        var(--link-color);
+  --link-underline:          var(--underline-color);
+  --selection-bg:            light-dark(rgba(3, 102, 230, 0.18),    rgba(255, 255, 179, 0.22));
+  --active-bgcolor:          var(--yellow);
+
+  /* — Derived surfaces — */
+  --surface-subtle:          color-mix(in srgb, var(--bg) 96%, var(--fg) 4%);
+  --surface-muted:           color-mix(in srgb, var(--bg) 94%, var(--fg) 6%);
+  --surface-raised:          color-mix(in srgb, var(--bg) 92%, var(--fg) 8%);
+  --surface-hover:           color-mix(in srgb, var(--fg) 8%, var(--bg));
+  --surface-input:           var(--bg);
+  --shadow-drawer:
+    0 0 0 var(--border-w) color-mix(in srgb, var(--border) 50%, transparent),
+    0 12px 40px           color-mix(in srgb, #000 18%, transparent);
+  --shadow-floating:         0 4px 12px color-mix(in srgb, #000 10%, transparent);
+}
+
+/* =============================================================================
+   3. Theme overrides
+   --------------------------------------------------------------------------
+   Forcing a scheme is enough — light-dark() resolves accordingly.
+   ========================================================================== */
 :root[data-theme="light"] { color-scheme: light; }
 :root[data-theme="dark"]  { color-scheme: dark; }
 
-/* Dark palette — applied for system dark (unless user forced light) and explicit dark */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --bg: #111;
-    --fg: #fafafa;
-    --fg-bright: #fff;
-    --fg-5: rgba(255, 255, 255, 0.5);
-    --fg-1: rgba(255, 255, 255, 0.08);
-    --muted: var(--fg-5);
-    --border: rgba(255, 255, 255, 0.18);
-    --underline-color: rgba(255, 255, 255, 0.3);
-    --underline-color-bright: rgba(255, 255, 255, 0.6);
-    --unit-bg: #333;
-    --code-bg: var(--unit-bg);
-    --blockquote-bg: rgba(255, 255, 255, 0.06);
-    --blockquote-fg: var(--fg);
-    --link-color: var(--light-yellow);
-    --link-hover-color: var(--light-yellow);
-    --link-underline: var(--underline-color);
-    --selection-bg: rgba(255, 255, 179, 0.22);
-  }
-}
-:root[data-theme="dark"] {
-  --bg: #111;
-  --fg: #fafafa;
-  --fg-bright: #fff;
-  --fg-5: rgba(255, 255, 255, 0.5);
-  --fg-1: rgba(255, 255, 255, 0.08);
-  --muted: var(--fg-5);
-  --border: rgba(255, 255, 255, 0.18);
-  --underline-color: rgba(255, 255, 255, 0.3);
-  --underline-color-bright: rgba(255, 255, 255, 0.6);
-  --unit-bg: #333;
-  --code-bg: var(--unit-bg);
-  --blockquote-bg: rgba(255, 255, 255, 0.06);
-  --blockquote-fg: var(--fg);
-  --link-color: var(--light-yellow);
-  --link-hover-color: var(--light-yellow);
-  --link-underline: var(--underline-color);
-  --selection-bg: rgba(255, 255, 179, 0.22);
-}
-
+/* =============================================================================
+   4. Base
+   ========================================================================== */
 * { box-sizing: border-box; }
 
 html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   font-synthesis: none;
-  font-feature-settings: "ss01" 1, "ss02" 1, "ss03" 1, "ss08" 1;
+  font-feature-settings: var(--feature-stylistic);
 }
 
 body {
@@ -115,8 +181,8 @@ body {
   min-height: 100vh;
   background: var(--bg);
   color: var(--fg);
-  font: 400 16px/1.5 var(--font);
-  font-feature-settings: "ss01" 1, "ss02" 1, "ss03" 1, "ss08" 1;
+  font: 400 1rem/var(--lh-base) var(--font-sans);
+  font-feature-settings: var(--feature-stylistic);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -129,25 +195,30 @@ body.nav-lock {
   overscroll-behavior: none;
 }
 
-/* —— Shell layout —— */
+.loading,
+.error { color: var(--muted); }
+
+/* =============================================================================
+   5. Shell layout
+   ========================================================================== */
 .shell {
   display: flex;
   align-items: flex-start;
-  max-width: 64rem;
+  max-width: var(--shell-max);
   margin: 0 auto;
   min-height: 100vh;
 }
 
 .shell > #nav {
-  flex: 0 0 12.5rem;
+  flex: 0 0 var(--nav-w);
   position: sticky;
   top: 0;
   height: 100vh;
   height: 100dvh;
   overflow: auto;
   padding: 1.25rem 0.9rem 2rem 1.1rem;
-  border-right: 1px solid var(--border);
-  background: color-mix(in srgb, var(--bg) 94%, var(--fg) 6%);
+  border-right: var(--border-w) solid var(--border);
+  background: var(--surface-muted);
 }
 
 .shell > #content {
@@ -157,11 +228,11 @@ body.nav-lock {
   padding: 1.5rem 1.25rem 2.5rem 1.1rem;
 }
 
-.loading,
-.error { color: var(--muted); }
+/* =============================================================================
+   6. Sidebar (nav tree + filter)
+   ========================================================================== */
+#nav nav { font-size: var(--fs-md); }
 
-/* —— Sidebar (nav tree + filter) —— */
-#nav nav { font-size: 0.9rem; }
 #nav ul {
   list-style: none;
   margin: 0;
@@ -171,16 +242,16 @@ body.nav-lock {
 #nav ul ul {
   margin: 0.35rem 0 0 0.4rem;
   padding-left: 0.5rem;
-  border-left: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  border-left: var(--border-w) solid color-mix(in srgb, var(--border) 60%, transparent);
 }
 #nav li { margin: 0.1rem 0 0.25rem; }
 
 #nav a,
 #nav span.label {
   display: block;
-  line-height: 1.4;
+  line-height: var(--lh-tight);
   padding: 0.2rem 0.15rem;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   color: inherit;
   text-decoration: none;
 }
@@ -194,27 +265,23 @@ body.nav-lock {
   outline: none;
 }
 #nav a.branch { font-weight: 500; }
+
 #nav span.label {
   color: var(--muted);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: var(--fs-md);
   margin-top: 0.2rem;
 }
 
 #nav mark {
   padding: 0 0.08em;
-  border-radius: 3px;
-  background: color-mix(in srgb, #f59e0b 40%, var(--bg) 60%);
+  border-radius: var(--radius-xs);
+  background: light-dark(
+    color-mix(in srgb, var(--accent-mark-light) 40%, var(--bg) 60%),
+    color-mix(in srgb, var(--accent-mark-dark)  45%, var(--bg) 55%)
+  );
   color: inherit;
   font: inherit;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) #nav mark {
-    background: color-mix(in srgb, #d97706 45%, var(--bg) 55%);
-  }
-}
-:root[data-theme="dark"] #nav mark {
-  background: color-mix(in srgb, #d97706 45%, var(--bg) 55%);
 }
 
 #nav .count {
@@ -224,8 +291,9 @@ body.nav-lock {
   white-space: nowrap;
 }
 
-/* —— Sidebar filter —— */
+/* — Sidebar filter — */
 #nav .search { margin: 0 0 0.85rem; }
+
 #nav .search > label {
   position: absolute;
   width: 1px; height: 1px;
@@ -241,11 +309,11 @@ body.nav-lock {
   margin: 0 0 0.35rem;
   padding: 0.4rem 0.5rem;
   font: inherit;
-  font-size: 0.9rem;
+  font-size: var(--fs-md);
   color: inherit;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: var(--surface-input);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-input);
 }
 #nav .search > input::placeholder {
   color: var(--muted);
@@ -263,17 +331,19 @@ body.nav-lock {
   color: var(--muted);
 }
 
-/* —— Mobile menubar + drawer —— */
+/* =============================================================================
+   7. Mobile menubar + drawer
+   ========================================================================== */
 #menubar {
   display: none;
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 800;
+  z-index: var(--z-menubar);
   align-items: center;
   gap: 0.5rem;
-  min-height: calc(3.25rem + env(safe-area-inset-top, 0));
+  min-height: calc(var(--menubar-h) + env(safe-area-inset-top, 0));
   padding: env(safe-area-inset-top, 0) 0.5rem 0.25rem 0.6rem;
-  border-bottom: 1px solid var(--border);
+  border-bottom: var(--border-w) solid var(--border);
   background: color-mix(in srgb, var(--bg) 94%, var(--fg) 4%);
   backdrop-filter: blur(8px);
 }
@@ -284,8 +354,8 @@ body.nav-lock {
   gap: 0.45rem;
   margin: 0;
   padding: 0.45rem 0.55rem;
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius);
   background: color-mix(in srgb, var(--bg) 90%, var(--fg) 4%);
   color: inherit;
   font: inherit;
@@ -296,10 +366,11 @@ body.nav-lock {
 }
 #menubar > button:hover,
 #menubar > button:focus-visible {
-  background: color-mix(in srgb, var(--fg) 8%, var(--bg));
+  background: var(--surface-hover);
   outline: none;
 }
 
+/* — Hamburger icon — */
 #menubar > button > span:first-child {
   position: relative;
   display: flex;
@@ -315,7 +386,7 @@ body.nav-lock {
   width: 100%;
   border-radius: 1px;
   background: currentColor;
-  transition: transform 0.2s ease, opacity 0.2s ease;
+  transition: transform var(--t-base) ease, opacity var(--t-base) ease;
 }
 
 html.nav-open #menubar > button > span:first-child { gap: 0; }
@@ -332,7 +403,7 @@ html.nav-open #menubar > button > span:first-child > span:nth-child(3) { transfo
 
 #menubar > span:last-child {
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: var(--fs-lg);
   letter-spacing: -0.02em;
   flex: 1;
   min-width: 0;
@@ -345,14 +416,14 @@ html.nav-open #menubar > button > span:first-child > span:nth-child(3) { transfo
   display: none;
   position: fixed;
   inset: 0;
-  z-index: 600;
+  z-index: var(--z-backdrop);
   background: color-mix(in srgb, #0f172a 55%, transparent);
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
 }
 html.nav-open #backdrop {
   display: block;
-  animation: backdrop-in 0.2s ease-out;
+  animation: backdrop-in var(--t-base) ease-out;
 }
 @keyframes backdrop-in {
   from { opacity: 0; }
@@ -362,15 +433,16 @@ html.nav-open #backdrop {
 @media (max-width: 52rem) {
   #menubar:not([hidden]) { display: flex; }
   #menubar:not([hidden]) ~ .shell {
-    padding-top: calc(3.25rem + env(safe-area-inset-top, 0));
+    padding-top: calc(var(--menubar-h) + env(safe-area-inset-top, 0));
   }
+
   .shell { flex-direction: column; }
 
   .shell > #nav {
     position: fixed;
-    top: calc(3.25rem + env(safe-area-inset-top, 0));
+    top: calc(var(--menubar-h) + env(safe-area-inset-top, 0));
     left: 0; bottom: 0;
-    z-index: 700;
+    z-index: var(--z-drawer);
     width: min(20rem, 90vw);
     max-width: 100%;
     max-height: none;
@@ -378,17 +450,15 @@ html.nav-open #backdrop {
     margin: 0;
     padding: 0.9rem 0.9rem 2rem 1.1rem;
     padding-left: max(1.1rem, env(safe-area-inset-left, 0));
-    border-right: 1px solid var(--border);
+    border-right: var(--border-w) solid var(--border);
     border-bottom: none;
-    background: color-mix(in srgb, var(--bg) 94%, var(--fg) 6%);
-    box-shadow:
-      0 0 0 1px color-mix(in srgb, var(--border) 50%, transparent),
-      0 12px 40px color-mix(in srgb, #000 18%, transparent);
+    background: var(--surface-muted);
+    box-shadow: var(--shadow-drawer);
     overflow: auto;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior: contain;
     transform: translate3d(-105%, 0, 0);
-    transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: transform var(--t-slow) var(--ease-out);
     will-change: transform;
   }
   .shell > #nav[hidden]      { display: none; }
@@ -405,28 +475,36 @@ html.nav-open #backdrop {
   #backdrop[hidden] { display: none !important; }
 }
 
-/* —— Article (rendered markdown + UI blocks) —— */
+/* =============================================================================
+   8. Article (rendered markdown + UI blocks)
+   ========================================================================== */
 #content > article > :first-child,
 .md > :first-child { margin-top: 0; }
 
+.md {
+  position: relative;
+  margin: 0 0 1.25rem;
+}
+
+/* — Headings — */
 #content > article > h1,
 .md h1 {
-  font-size: 3.2rem;
+  font-size: var(--fs-h1);
   font-weight: 600;
   font-style: italic;
-  font-feature-settings: "ss01" 1, "ss03" 1, "ss04" 1;
+  font-feature-settings: var(--feature-display);
   font-variation-settings: "opsz" 16.77, "wght" 400;
   font-optical-sizing: none;
   letter-spacing: -0.01em;
-  line-height: 1.0;
+  line-height: var(--lh-flat);
   color: var(--fg-bright);
   margin: 0 0 1.2rem;
 }
 .md h2 {
-  font-size: 1.6rem;
+  font-size: var(--fs-h2);
   font-weight: 600;
   font-style: italic;
-  font-feature-settings: "ss01" 1, "ss03" 1, "ss04" 1;
+  font-feature-settings: var(--feature-display);
   font-variation-settings: "opsz" 16.77, "wght" 500;
   font-optical-sizing: none;
   letter-spacing: -0.01em;
@@ -434,7 +512,7 @@ html.nav-open #backdrop {
   margin: 2.4rem 0 1.2rem;
 }
 .md h3 {
-  font-size: 1rem;
+  font-size: var(--fs-h3);
   font-weight: 600;
   margin: 1.8rem 0 1.2rem;
 }
@@ -457,75 +535,17 @@ html.nav-open #backdrop {
 .md > h5:first-child,
 .md > h6:first-child { margin-top: 0; }
 
-.md {
-  position: relative;
-  margin: 0 0 1.25rem;
-}
-.md > button.copy-md-btn {
-  position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 2;
-  border: 1px solid var(--border);
-  border-radius: 0.35rem;
-  background: color-mix(in srgb, var(--bg) 92%, var(--fg) 8%);
-  color: var(--fg);
-  font: inherit;
-  font-size: 0.72rem;
-  font-weight: 600;
-  line-height: 1;
-  padding: 0.28rem 0.45rem;
-  cursor: pointer;
-  opacity: 0.85;
-}
-.md > button.copy-md-btn:hover,
-.md > button.copy-md-btn:focus-visible {
-  opacity: 1;
-  background: color-mix(in srgb, var(--bg) 82%, var(--fg) 18%);
-  outline: none;
-}
-.md > button.copy-md-btn[data-state="success"] {
-  border-color: color-mix(in srgb, #16a34a 45%, var(--border));
-}
-.md > button.copy-md-btn[data-state="error"] {
-  border-color: color-mix(in srgb, #dc2626 45%, var(--border));
-}
-.md p { margin: 0 0 1.1rem; }
-.md ul, .md ol { margin: 0 0 1.1rem; padding-left: 1.4em; }
-.md li { margin-bottom: 0.25em; }
-.md hr {
-  border: 0;
-  height: 1px;
-  background: var(--border);
-  margin: 2.2rem 0;
+.md h1, .md h2, .md h3, .md h4, .md h5, .md h6 {
+  scroll-margin-top: 0.9rem;
+  padding-left: 1.5rem;
+  margin-left: -1.0625rem;
+  background-color: var(--surface-muted);
 }
 
-.md a {
-  color: var(--fg);
-  text-decoration: underline;
-  text-decoration-color: var(--underline-color);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-  text-decoration-skip-ink: auto;
-  word-break: break-word;
-  word-wrap: break-word;
-}
-.md a:hover {
-  color: var(--link-hover-color);
-  text-decoration-color: var(--link-hover-color);
-}
-.md a[href^="#"]:hover {
-  text-decoration-style: dashed;
-}
+/* — Heading anchor link — */
 .md h1 > a, .md h2 > a, .md h3 > a, .md h4 > a, .md h5 > a, .md h6 > a {
   color: inherit;
   text-decoration: none;
-}
-.md h1, .md h2, .md h3, .md h4, .md h5, .md h6 {
-  scroll-margin-top: 0.9rem;
-  padding-left: 24px;
-  margin-left: -17px;
-  background-color: color-mix(in srgb, var(--bg) 94%, var(--fg) 6%);
 }
 .md h1 > a.heading-link,
 .md h2 > a.heading-link,
@@ -538,7 +558,7 @@ html.nav-open #backdrop {
   text-decoration: none;
   font-weight: 500;
   opacity: 0;
-  transition: opacity 120ms ease;
+  transition: opacity var(--t-fast) ease;
 }
 .md h1:hover > a.heading-link,
 .md h2:hover > a.heading-link,
@@ -555,6 +575,68 @@ html.nav-open #backdrop {
   opacity: 1;
 }
 
+/* — "Copy markdown" button — */
+.md > button.copy-md-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: var(--z-overlay);
+  border: var(--border-w) solid var(--border);
+  border-radius: 0.35rem;
+  background: var(--surface-raised);
+  color: var(--fg);
+  font: inherit;
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  line-height: var(--lh-flat);
+  padding: 0.28rem 0.45rem;
+  cursor: pointer;
+  opacity: 0.85;
+}
+.md > button.copy-md-btn:hover,
+.md > button.copy-md-btn:focus-visible {
+  opacity: 1;
+  background: color-mix(in srgb, var(--bg) 82%, var(--fg) 18%);
+  outline: none;
+}
+.md > button.copy-md-btn[data-state="success"] {
+  border-color: color-mix(in srgb, var(--accent-success) 45%, var(--border));
+}
+.md > button.copy-md-btn[data-state="error"] {
+  border-color: color-mix(in srgb, var(--accent-error) 45%, var(--border));
+}
+
+/* — Block elements — */
+.md p { margin: 0 0 1.1rem; }
+.md ul, .md ol { margin: 0 0 1.1rem; padding-left: 1.4em; }
+.md li { margin-bottom: 0.25em; }
+.md hr {
+  border: 0;
+  height: var(--border-w);
+  background: var(--border);
+  margin: 2.2rem 0;
+}
+
+/* — Links — */
+.md a {
+  color: var(--fg);
+  text-decoration: underline;
+  text-decoration-color: var(--underline-color);
+  text-decoration-thickness: var(--border-w);
+  text-underline-offset: 0.2em;
+  text-decoration-skip-ink: auto;
+  word-break: break-word;
+  word-wrap: break-word;
+}
+.md a:hover {
+  color: var(--link-hover-color);
+  text-decoration-color: var(--link-hover-color);
+}
+.md a[href^="#"]:hover {
+  text-decoration-style: dashed;
+}
+
+/* — Blockquote — */
 .md blockquote {
   margin: 0 0 1.25rem;
   padding: 0.5em 1em;
@@ -564,6 +646,7 @@ html.nav-open #backdrop {
 }
 .md blockquote > :last-child { margin-bottom: 0; }
 
+/* — Tables — */
 .md table {
   display: block;
   width: max-content;
@@ -572,46 +655,47 @@ html.nav-open #backdrop {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   border-collapse: collapse;
-  border-top: 1px solid var(--border);
-  border-right: 1px solid var(--border);
+  border-top: var(--border-w) solid var(--border);
+  border-right: var(--border-w) solid var(--border);
   margin: 0 0 1.5rem;
 }
 .md th,
 .md td {
   padding: 0.5em 0.75em;
-  border-bottom: 1px solid var(--border);
-  border-left: 1px solid var(--border);
-  line-height: 1.5;
+  border-bottom: var(--border-w) solid var(--border);
+  border-left: var(--border-w) solid var(--border);
+  line-height: var(--lh-base);
   vertical-align: top;
   text-align: left;
 }
 .md th { font-weight: 600; }
 
+/* — Code (inline + block) — */
 .md pre,
 .md code,
 .md tt,
 .md kbd {
-  font-family: var(--mono);
+  font-family: var(--font-mono);
   font-feature-settings: "calt" 0;
   line-height: inherit;
 }
 
-.md code[class*=language-], pre[class*=language-] {
-  font-family: var(--mono);
+/* Reset Prism defaults. Selectors deliberately match original specificity
+   (0,1,1) so `.md pre { padding: 0.75rem 1rem }` below wins by source order. */
+.md code[class*=language-],
+pre[class*=language-] {
+  font-family: var(--font-mono);
   border-radius: 0;
   padding: 0;
   text-shadow: none !important;
   text-decoration: none !important;
-  text-decoration-thickness: 1px !important;
+  text-decoration-thickness: var(--border-w) !important;
   text-underline-offset: xxx-small !important;
   text-decoration-skip-ink: auto !important;
-
   white-space: pre;
   word-break: normal;
   word-wrap: normal;
-
 }
-
 
 .md :not(pre) > code,
 .md tt {
@@ -619,7 +703,7 @@ html.nav-open #backdrop {
   border-radius: 0.3em;
   padding: 0 0.3em;
   white-space: pre;
-  font-size: var(--code-font-size);
+  font-size: var(--fs-code-inline);
 }
 .md h1 code, .md h2 code, .md h3 code,
 .md h4 code, .md h5 code, .md h6 code {
@@ -630,8 +714,8 @@ html.nav-open #backdrop {
   font-size: 0.9em;
 }
 .md kbd {
-  border: 1px solid var(--border);
-  border-radius: 3px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-xs);
   padding: 0.1em 0.3em;
   margin: 0 0.1em;
   background: transparent;
@@ -643,7 +727,7 @@ html.nav-open #backdrop {
   padding: 0.75rem 1rem;
   overflow-x: auto;
   overflow-y: hidden;
-  line-height: 1.5;
+  line-height: var(--lh-base);
   white-space: pre;
   line-break: auto;
 }
@@ -651,12 +735,14 @@ html.nav-open #backdrop {
   background: none;
   padding: 0;
   font-weight: inherit;
-  font-size: 13px;
+  font-size: var(--fs-code);
   white-space: pre;
 }
+
+/* — Prism (always dark) — */
 .md pre.prism {
-  background: #272822;
-  color: #f8f8f2;
+  background: var(--prism-bg);
+  color: var(--prism-fg);
   position: relative;
   padding-top: 2.2rem;
 }
@@ -668,15 +754,14 @@ html.nav-open #backdrop {
   position: absolute;
   top: 0.45rem;
   right: 0.55rem;
-  z-index: 1;
-  border: 1px solid color-mix(in srgb, #fff 24%, transparent);
-  /*border-radius: 0.35rem;*/
+  z-index: var(--z-copy-btn);
+  border: var(--border-w) solid color-mix(in srgb, #fff 24%, transparent);
   background: color-mix(in srgb, #000 20%, transparent);
-  color: #f8f8f2;
+  color: var(--prism-fg);
   font: inherit;
   font-size: 0.78rem;
   font-weight: 600;
-  line-height: 1;
+  line-height: var(--lh-flat);
   padding: 0.3rem 0.45rem;
   cursor: pointer;
   opacity: 0.9;
@@ -696,14 +781,16 @@ html.nav-open #backdrop {
   color: #fecaca;
 }
 
-/* —— UI block —— */
+/* =============================================================================
+   9. UI block (forms inside markdown)
+   ========================================================================== */
 .ui { margin: 1.5rem 0; }
+
 .ui > form,
 .ui > div {
-  /*border: 1px solid var(--border);*/
   border-radius: var(--radius);
   padding: 1rem 1.1rem 1.15rem;
-  background: color-mix(in srgb, var(--bg) 96%, var(--fg) 4%);
+  background: var(--surface-subtle);
 }
 .ui > div.empty {
   background: transparent;
@@ -729,9 +816,9 @@ html.nav-open #backdrop {
   max-width: 28rem;
   font: inherit;
   padding: 0.4rem 0.55rem;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg);
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-input);
+  background: var(--surface-input);
   color: inherit;
 }
 .ui .control > textarea {
@@ -752,15 +839,15 @@ html.nav-open #backdrop {
   display: inline-flex;
   align-items: center;
   padding: 0.45rem 0.95rem;
-  border: 1px solid var(--border);
+  border: var(--border-w) solid var(--border);
   border-radius: var(--radius);
-  background: color-mix(in srgb, var(--bg) 92%, var(--fg) 8%);
+  background: var(--surface-raised);
   font: inherit;
   font-weight: 600;
   cursor: pointer;
 }
-
 .ui .control > button:hover { filter: brightness(1.05); }
+
 @media (prefers-reduced-motion: reduce) {
   .ui .control > button:hover {
     filter: none;
@@ -769,7 +856,7 @@ html.nav-open #backdrop {
 }
 
 .ui fieldset {
-  border: 1px solid var(--border);
+  border: var(--border-w) solid var(--border);
   border-radius: var(--radius);
   margin: 0;
   padding: 0.75rem 0.9rem 0.9rem;
@@ -784,10 +871,12 @@ html.nav-open #backdrop {
   font-weight: 600;
 }
 
-.ui .group { display: contents; }
+.ui .group   { display: contents; }
 .ui .unknown { color: var(--muted); font-style: italic; }
 
-/* —— Mermaid output —— */
+/* =============================================================================
+   10. Mermaid output
+   ========================================================================== */
 .mermaid {
   margin: 0 0 1.25rem;
   padding: 0.25rem 0;
@@ -796,8 +885,7 @@ html.nav-open #backdrop {
   overflow-y: hidden;
   border-radius: 0;
   background: transparent;
-  border: 1px solid rgb(230 228 228);
-  /*border: 1px solid var(--border);*/
+  border: var(--border-w) solid var(--border);
 }
 .mermaid svg {
   max-width: 100%;
@@ -805,27 +893,25 @@ html.nav-open #backdrop {
   display: block;
   margin-left: auto;
   margin-right: auto;
-  font-family: var(--font);
+  font-family: var(--font-sans);
   color: var(--fg);
   background: transparent;
 }
 .mermaid.err {
   font-size: 0.85em;
-  font-family: var(--mono);
-  color: #c00;
+  font-family: var(--font-mono);
+  color: light-dark(#a00, #c00);
   white-space: pre-wrap;
 }
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme="dark"]) .mermaid.err { color: #a00; }
-}
-:root[data-theme="light"] .mermaid.err { color: #a00; }
 
-/* —— Theme switcher —— */
+/* =============================================================================
+   11. Theme switcher button
+   ========================================================================== */
 #theme-btn {
   position: fixed;
   top: calc(env(safe-area-inset-top, 0) + 0.6rem);
   right: calc(env(safe-area-inset-right, 0) + 0.75rem);
-  z-index: 850;
+  z-index: var(--z-floating);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -833,24 +919,22 @@ html.nav-open #backdrop {
   height: 2.4rem;
   margin: 0;
   padding: 0;
-  border: 1px solid var(--border);
-  border-radius: 999px;
+  border: var(--border-w) solid var(--border);
+  border-radius: var(--radius-pill);
   background: color-mix(in srgb, var(--bg) 88%, var(--fg) 8%);
   color: inherit;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   backdrop-filter: blur(8px);
-  box-shadow: 0 4px 12px color-mix(in srgb, #000 10%, transparent);
-  transition: background 120ms ease, transform 120ms ease;
+  box-shadow: var(--shadow-floating);
+  transition: background var(--t-fast) ease, transform var(--t-fast) ease;
 }
-#theme-btn:hover {
-  background: color-mix(in srgb, var(--fg) 12%, var(--bg));
-}
+#theme-btn:hover         { background: color-mix(in srgb, var(--fg) 12%, var(--bg)); }
 #theme-btn:focus-visible {
   outline: 2px solid color-mix(in srgb, var(--fg) 35%, var(--border));
   outline-offset: 2px;
 }
-#theme-btn:active { transform: scale(0.94); }
+#theme-btn:active        { transform: scale(0.94); }
 
 #theme-btn > span {
   display: none;
@@ -863,6 +947,7 @@ html.nav-open #backdrop {
   display: block;
 }
 
+/* Default (light): show first icon. Dark: show last icon. */
 #theme-btn > span:first-child { display: inline-flex; }
 
 :root[data-theme="dark"] #theme-btn > span:first-child { display: none; }
@@ -873,26 +958,30 @@ html.nav-open #backdrop {
   :root:not([data-theme="light"]) #theme-btn > span:last-child  { display: inline-flex; }
 }
 
+/* =============================================================================
+   12. Print
+   ========================================================================== */
 @media print {
   @page {
     margin: 14mm 12mm 18mm;
+
     @bottom-left {
       content: attr(data-print-date);
-      font-family: var(--font);
+      font-family: var(--font-sans);
       font-size: 10pt;
       font-weight: 400;
       color: rgba(0, 0, 0, 0.7);
     }
     @bottom-center {
       content: attr(data-print-title);
-      font-family: var(--font);
+      font-family: var(--font-sans);
       font-size: 10pt;
       font-weight: 400;
       color: rgba(0, 0, 0, 0.7);
     }
     @bottom-right {
       content: counter(page) " / " counter(pages);
-      font-family: var(--font);
+      font-family: var(--font-sans);
       font-size: 10pt;
       font-weight: 400;
       color: rgba(0, 0, 0, 0.7);
@@ -912,7 +1001,6 @@ html.nav-open #backdrop {
     min-height: 0;
     margin: 0;
   }
-
   .shell > #content {
     padding: 0;
     max-width: none;
