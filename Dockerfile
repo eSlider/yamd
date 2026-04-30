@@ -11,11 +11,11 @@ ENV PORT=3456
 ENV HOST=0.0.0.0
 ENV NODE_ENV=production
 
-COPY package.json dev-server.js index.html pages.yml ./
+COPY package.json dev-server.js index.html ./
 COPY content ./content
 COPY src ./src
 
 EXPOSE 3456
 
-# Same entry as `npm start` — pure static file server for index.html, src/, content/, pages.yml
+# Same entry as `npm start` — pure static file server for index.html, src/, content/
 CMD ["bun", "run", "dev-server.js"]

@@ -28,7 +28,6 @@ jobs:
           set -e
           mkdir -p _site
           cp -a index.html .nojekyll _site/
-          [ -f pages.yml ] && cp -a pages.yml _site/
           cp -a content _site/
           cp -a src _site/
 
