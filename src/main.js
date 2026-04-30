@@ -260,6 +260,26 @@ function currentLogicalPath() {
   );
 }
 
+/**
+ * @param {import("./site-nav.js").NavItem[]} items
+ * @param {Set<string>} paths
+ * @returns {string | undefined}
+ */
+function firstMatchingPathInNav(items, paths) {
+  for (const n of items) {
+    if (n.path && paths.has(norm(n.path))) {
+      return n.path;
+    }
+    if (n.items && n.items.length) {
+      const nested = firstMatchingPathInNav(n.items, paths);
+      if (nested) {
+        return nested;
+      }
+    }
+  }
+  return undefined;
+}
+
 function drawNav(/** @type {string} */ rel) {
   if (!hasNav || !navHost) {
     return;
@@ -272,6 +292,22 @@ function drawNav(/** @type {string} */ rel) {
           pathFilter = paths;
           pathFilterQuery = query || "";
           pathFilterCounts = pathCounts;
+          const qt = pathFilterQuery.trim();
+          if (qt && paths && paths.size > 0) {
+            const targetPath = firstMatchingPathInNav(nav.items, paths);
+            if (targetPath) {
+              const currentRoute = routeFromHash();
+              const needsRouteChange =
+                norm(targetPath) !== norm(currentRoute.contentPath || "") ||
+                Boolean(currentRoute.headingSlug);
+              if (needsRouteChange) {
+                const u = getHistoryUrlForContent(targetPath);
+                history.replaceState({ p: targetPath }, "", u);
+                void go(targetPath);
+                return;
+              }
+            }
+          }
           drawNav(currentLogicalPath());
           const firstHit = applyFilterHighlight(el, pathFilterQuery);
           setActiveFilterMatch(firstHit);

@@ -3,6 +3,18 @@
 All notable changes to this project are documented in this file.  
 This project is pre-1.0; breaking changes are possible between releases.
 
+## [0.1.4-alpha.3] — 2026-04-30
+
+Pre-release **alpha** refining how the sidebar filter drives reading context.
+
+### Highlights
+
+- **Navigate to the first match:** when a query matches at least one indexed page, yamd opens the **first matching path in `pages.yml` order** and updates the **`#` deep link** accordingly
+- **Then focus findings:** article matches are highlighted as before, with first hit auto-scroll plus **`Alt+N`** for the next hit
+- **CI/CD:** Docker + GitHub Pages workflows no longer assume root `pages.yml` (canonical `content/pages.yml`)
+
+[0.1.4-alpha.3]: https://github.com/eSlider/yamd/releases/tag/v0.1.4-alpha.3
+
 ## [0.1.4-alpha.2] — 2026-04-30
 
 Pre-release **alpha** focused on filter UX polish in navigation and rendered content.

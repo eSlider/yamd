@@ -37,7 +37,7 @@ flowchart BT
 | `filter-highlight.js` | In-article text highlight for current filter value; returns first hit for auto-scroll / keyboard navigation             |
 | `mobile-nav.js`       | Mobile drawer behavior: hamburger toggle, scrim, body scroll lock                                                     |
 | `md-rewrite-links.js` | Rewrites repo-relative `*.md` links in HTML to the app’s deep-link hash                                               |
-| `main.js`             | Fetch `pages.yml` + markdown, routing, nav + search + mobile drawer                                                   |
+| `main.js`             | Fetch `pages.yml` + markdown; routing + mobile drawer + search; filter can replace route to first matched page (`#`), then highlights |
 
 Source: repo [`src/`](https://github.com/eSlider/yamd/tree/main/src) (not served as a directory index on the static site).
 

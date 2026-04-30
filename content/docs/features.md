@@ -47,8 +47,9 @@ When `pages.yml` defines a non-empty nav, a filter field appears at the top of t
 - **It narrows the same tree.** No second list of results to scan.
 - **Index builds on focus.** Nothing downloaded until you actually use it.
 - **Multi-word queries are AND-ed.** Every word must match.
+- **Open the first meaningful page.** The first match in **`pages.yml` tree order** is loaded and the **`#`** URL reflects that page before in-article scrolling.
 - **Page content is highlighted too.** Matches are wrapped in `.filter-value`.
-- **First match is auto-focused.** No manual scroll to locate context.
+- **First match is auto-focused.** Scrolls the first occurrence into view once the article is rendered.
 - **Press `/` to focus, `Esc` to clear, `Alt+N` for next match.** Keyboard-first, always.
 
 The index covers nav titles, frontmatter `title`, and the plain-text body of each page. Code blocks are stripped from the body before indexing.

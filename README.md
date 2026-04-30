@@ -23,7 +23,7 @@ A folder of `.md` files. One `pages.yml`. That is the whole stack. If you delete
 - **You stay in content, not a framework.** Pages are GitHub-Flavored Markdown. The shell loads once; you refresh when files change.
 - **Ships like any static site.** Drop the folder on GitHub Pages, Netlify, S3, or your own host. The engine in `src/*.js` runs in the reader’s browser. No server-side render.
 - **The manual is the product.** Philosophy, features, routing, local run, deploy, and security all live in [`content/`](content/) and link from the left nav. Start at [`content/start.md`](content/start.md).
-- **Sidebar filter that respects you.** With a `pages.yml` nav, the filter narrows the same tree as you type — no second list of results, no surprise downloads. Matches are highlighted in nav and page content, first match is auto-focused, and you can jump to the next one with `Alt+N`. The text index loads only when you focus the field. Press `/` to focus, `Esc` to clear.
+- **Sidebar filter that respects you.** With a `pages.yml` nav, the filter narrows the same tree as you type — no second list of results, no surprise downloads. When there are matches it also opens the **first matching page** (nav order), updates the **`#` URL**, highlights matches in the article, scrolls to the first hit, and **`Alt+N`** jumps to the next. The text index loads only when you focus the field. Press `/` to focus, `Esc` to clear.
 
 ## Try it in a minute
 
@@ -36,7 +36,7 @@ npm run dev
 ```
 
 Open `http://127.0.0.1:3456/` (or the port printed in the terminal). Edit files under `content/`, save, and refresh. 
-Change the sidebar with [`content/pages.yml`](content/pages.yml). After the first **focus** on the filter field, you can type to filter the tree and see highlights in both nav labels and page content. The first hit scrolls into view, and **`Alt+N`** jumps to the next highlighted occurrence. Press **`/`** to focus the field (when not typing in another input).
+Change the sidebar with [`content/pages.yml`](content/pages.yml). After the first **focus** on the filter field, you can type to filter the tree. With matches you get routed to the first relevant page (**`#`** updates), highlights in nav and content, scroll to first hit, and **`Alt+N`** for the next. Press **`/`** to focus the field (when not typing in another input).
 
 **More options** (other tools, ports, and GitHub Pages): [Get started](https://eSlider.github.io/yamd/#docs/get-started) in the in-app manual. Or jump straight to the [Start here](https://eSlider.github.io/yamd/#start) page for the full reading map.
 

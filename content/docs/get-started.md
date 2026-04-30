@@ -49,6 +49,7 @@ Internal links use a hash and the path under `content/` — no `content/` segmen
 
 - Press **`/`** to focus the filter field.
 - Type to narrow the nav tree in place.
+- When matches exist you are routed to the **first matching page in `pages.yml` order** — the **`#`** deep link is updated (including dropping a stray heading fragment).
 - Matching text is highlighted inside rendered page content too.
 - The first match scrolls into view automatically.
 - Press **`Alt+N`** to jump to the next highlighted match.
