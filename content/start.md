@@ -20,20 +20,23 @@ Example structure (simplified; match your local paths):
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>yamd</title>
     <link rel="stylesheet" href="./src/app.css" />
+    <script type="module" src="./src/main.js"></script>
   </head>
   <body>
-    <div class="yamd-shell">
-      <aside id="yamd-nav-wrap" class="yamd-shell__nav" hidden aria-label="Table of contents"></aside>
-      <div id="yamd-content" class="yamd-app yamd-shell__main" role="main">
-        <p class="yamd-loading">Loading…</p>
-      </div>  ^
+    <div class="shell">
+      <aside id="nav" hidden aria-label="Table of contents"></aside>
+      <main id="content">
+        <p class="loading">Loading…</p>
+      </main>
     </div>
-    <script type="module" src="./src/main.js"></script>
   </body>
 </html>
 ```
+
+Required hooks the engine looks for: `#nav` (filled with the table of contents), `#content` (filled with the rendered article), and the `.shell` wrapper for layout. The mobile menubar (`#menubar` + `#backdrop`) and theme switcher (`#theme-btn`) seen in the real `index.html` are optional UX enhancements — omit them for the smallest possible shell.
 
 Fenced ` ```html` blocks in this page are only **documentation**; you still need the real `index.html` in the project root to run the app.
 

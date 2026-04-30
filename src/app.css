@@ -284,6 +284,18 @@ body.nav-lock {
   font: inherit;
 }
 
+/* — Sidebar-filter echo inside the rendered article — */
+.filter-value {
+  padding: 0 0.08em;
+  border-radius: var(--radius-xs);
+  background: light-dark(
+    color-mix(in srgb, var(--accent-mark-light) 40%, var(--bg) 60%),
+    color-mix(in srgb, var(--accent-mark-dark)  45%, var(--bg) 55%)
+  );
+  color: inherit;
+  font: inherit;
+}
+
 #nav .count {
   font-weight: 600;
   color: var(--muted);
@@ -537,7 +549,7 @@ html.nav-open #backdrop {
 
 .md h1, .md h2, .md h3, .md h4, .md h5, .md h6 {
   scroll-margin-top: 0.9rem;
-  padding-left: 1.5rem;
+  padding: 0.35rem 0 0.35rem 1.5rem;     /* internal breathing room inside bg-highlight */
   margin-left: -1.0625rem;
   background-color: var(--surface-muted);
 }
@@ -646,14 +658,14 @@ html.nav-open #backdrop {
 }
 .md blockquote > :last-child { margin-bottom: 0; }
 
-/* — Tables — */
+/* — Tables —
+   Always render as a real CSS table at 100% width. Cell content wraps
+   (including long words / URLs / inline code) instead of triggering a
+   horizontal scroller — important for print where scrollers can't render. */
 .md table {
-  display: block;
-  width: max-content;
-  min-width: 100%;
-  max-width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
+  display: table;
+  width: 100%;
+  table-layout: auto;
   border-collapse: collapse;
   border-top: var(--border-w) solid var(--border);
   border-right: var(--border-w) solid var(--border);
@@ -667,8 +679,22 @@ html.nav-open #backdrop {
   line-height: var(--lh-base);
   vertical-align: top;
   text-align: left;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 .md th { font-weight: 600; }
+
+/* Inline code / <pre> inside cells default to `white-space: pre` and refuse
+   to wrap — override so they break to the next line within tables. */
+.md table :not(pre) > code,
+.md table tt {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+.md table pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
 
 /* — Code (inline + block) — */
 .md pre,
@@ -962,6 +988,57 @@ pre[class*=language-] {
    12. Print
    ========================================================================== */
 @media print {
+  /* Always print with the light palette regardless of the active theme.
+     Forcing `color-scheme: light` resolves every `light-dark()` token to its
+     first (light) argument — fixes dark-theme bodies printing as light-on-white. */
+  :root,
+  :root[data-theme="dark"] {
+    color-scheme: light;
+  }
+
+  body {
+    margin: 0;
+    background: #fff;
+    color: #000;
+  }
+
+  /* Prism blocks are NOT theme-aware (always dark bg + light text). Browsers
+     drop the dark background by default → light tokens become invisible on
+     white paper. Render Prism as monochrome dark-on-white for print. */
+  .md pre.prism,
+  .md pre.prism > code,
+  .md pre.prism * {
+    background: transparent !important;
+    color: #000 !important;
+    text-shadow: none !important;
+  }
+  .md pre.prism {
+    border: var(--border-w) solid var(--border) !important;
+    padding-top: 0.75rem !important;        /* drop the room reserved for copy-btn */
+  }
+
+  /* Hide on-screen affordances (copy buttons, nav, theme switcher, etc). */
+  #menubar,
+  #nav,
+  #backdrop,
+  #theme-btn,
+  #print-footer,
+  button.copy-btn,
+  button.copy-md-btn {
+    display: none !important;
+  }
+
+  .shell {
+    display: block;
+    max-width: none;
+    min-height: 0;
+    margin: 0;
+  }
+  .shell > #content {
+    padding: 0;
+    max-width: none;
+  }
+
   @page {
     margin: 14mm 12mm 18mm;
 
@@ -987,26 +1064,4 @@ pre[class*=language-] {
       color: rgba(0, 0, 0, 0.7);
     }
   }
-
-  #menubar,
-  #nav,
-  #backdrop,
-  #theme-btn {
-    display: none !important;
-  }
-
-  .shell {
-    display: block;
-    max-width: none;
-    min-height: 0;
-    margin: 0;
-  }
-  .shell > #content {
-    padding: 0;
-    max-width: none;
-  }
-
-  body { margin: 0; }
-
-  #print-footer { display: none !important; }
 }

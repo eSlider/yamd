@@ -311,11 +311,17 @@ export function setupNavSearch(/** @type {{ onFilterChange: (paths: Set | null, 
   }
 
   async function loadIndexOnFocus() {
+    // Already indexed or a build is in flight: don't rebuild and don't disturb
+    // the current nav state. Re-focusing must never flash the full tree
+    // between an old filtered view and the same (re-applied) filtered view.
+    if (index.length > 0 || indexLoading) {
+      idleStatus();
+      return;
+    }
     const gen = ++indexGeneration;
     indexLoading = true;
     if (input.value.trim()) {
       setStatus("Indexing…");
-      onFilterChange(null, input.value.trim(), null);
     } else {
       idleStatus();
     }
@@ -327,6 +333,7 @@ export function setupNavSearch(/** @type {{ onFilterChange: (paths: Set | null, 
       index = rows;
       indexLoading = false;
       if (input.value.trim()) {
+        clearTimeout(debounce);
         applyFilter();
       } else {
         idleStatus();
@@ -339,6 +346,7 @@ export function setupNavSearch(/** @type {{ onFilterChange: (paths: Set | null, 
       indexLoading = false;
       setStatus("Index failed; filter by nav title only");
       if (input.value.trim()) {
+        clearTimeout(debounce);
         applyFilter();
       } else {
         idleStatus();
@@ -363,7 +371,9 @@ export function setupNavSearch(/** @type {{ onFilterChange: (paths: Set | null, 
       return;
     }
     if (indexLoading) {
-      onFilterChange(null, qt, null);
+      // Keep the current filtered nav as-is; only update status. Once the
+      // build resolves, loadIndexOnFocus calls applyFilter once with the
+      // freshly available index, so we'll render exactly once.
       setStatus("Indexing…");
       return;
     }

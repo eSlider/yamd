@@ -35,7 +35,10 @@ cd yamd
 npm run dev
 ```
 
-Open `http://127.0.0.1:3456/` (or the port printed in the terminal). Edit files under `content/`, save, and refresh. Change the sidebar with [`pages.yml`](pages.yml). After the first **focus** on the filter field, you can type to filter the tree and see highlights; press **`/`** to focus the field (when not typing in another input).
+Open `http://127.0.0.1:3456/` (or the port printed in the terminal). Edit files under `content/`, save, and refresh. 
+Change the sidebar with [`content/pages.yml`](content/pages.yml). After the first **focus** on the filter field, you 
+can type to 
+filter the tree and see highlights; press **`/`** to focus the field (when not typing in another input).
 
 **More options** (other tools, ports, and GitHub Pages): [Get started](https://eSlider.github.io/yamd/#docs/get-started) in the in-app manual. Or jump straight to the [Start here](https://eSlider.github.io/yamd/#start) page for the full reading map.
 
@@ -86,7 +89,7 @@ If yamd helps you, the most useful thing you can do is **star the [repository](h
 
 ### Credits
 
-Visual language adapted from [rsms.me](https://rsms.me/) by **Rasmus Andersson** — typography, palette, code/blockquote/table treatment. yamd uses [Inter](https://rsms.me/inter/) (Rasmus Andersson) and [Iosevka](https://github.com/be5invis/Iosevka) (Belleve Invis).
+**yamd** uses [Inter](https://rsms.me/inter/) (Rasmus Andersson) and [Iosevka](https://github.com/be5invis/Iosevka) (Belleve Invis).
 
 ## License
 

@@ -1,4 +1,5 @@
 import { compile } from "./document.js";
+import { applyFilterHighlight } from "./filter-highlight.js";
 import { render } from "./render-article.js";
 import { runLazyEnrichers } from "./render-enrich.js";
 import { setupMobileNav } from "./mobile-nav.js";
@@ -120,6 +121,16 @@ function scrollToHeading(headingSlug) {
 }
 
 /**
+ * @param {Element | null} target
+ */
+function scrollToFilterMatch(target) {
+  if (!target) {
+    return;
+  }
+  target.scrollIntoView({ block: "center", behavior: "auto" });
+}
+
+/**
  * @param {() => void} fn
  */
 function whenDocumentReady(fn) {
@@ -223,6 +234,8 @@ function drawNav(/** @type {string} */ rel) {
           pathFilterQuery = query || "";
           pathFilterCounts = pathCounts;
           drawNav(currentLogicalPath());
+          const firstHit = applyFilterHighlight(el, pathFilterQuery);
+          scrollToFilterMatch(firstHit);
         },
       },
       import.meta.url,
@@ -276,7 +289,12 @@ async function go(/** @type {string|undefined} */ explicitPath) {
     el.replaceChildren();
     render(el, doc, { contentPath: rel });
     await runLazyEnrichers(el);
-    scrollToHeading(route.headingSlug);
+    const firstHit = applyFilterHighlight(el, pathFilterQuery);
+    if (route.headingSlug) {
+      scrollToHeading(route.headingSlug);
+    } else {
+      scrollToFilterMatch(firstHit);
+    }
   } catch (e) {
     const p = document.createElement("p");
     p.className = "error";
